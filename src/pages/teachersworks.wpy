@@ -1,0 +1,129 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/color.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/btn.wxss';
+  @import '/zanui/tag.wxss';
+  .zan-card__thumb .zan-card__img {
+    border-radius:45rpx;
+  }
+  .video {
+  width:100%;
+  margin-left:10rpx;
+  margin-right:10rpx;
+}
+</style>
+
+
+
+<template>
+<view class="zan-panel">
+    <view class="zan-card">
+      <view class="zan-card__thumb">
+        <image class="zan-card__img"
+               src="{{teacher.img_url}}"
+               mode="aspectFit"
+        />
+
+      </view>
+      <view class="zan-card__detail">
+        <view class="zan-card__detail-row">
+          <view class="zan-card__left-col">{{teacher.nickname}}</view>
+          <view class="zan-card__left-col zan-ellipsis--l2">
+          </view>
+        </view>
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__right-col">
+            <view class="zan-tag zan-tag--primary">{{teacher.music_instruments}}</view></view>
+          <view class="zan-card__left-col">
+            {{teacher.teacher_methods}}
+          </view>
+        </view>
+
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__left-col zan-c-red">
+            <view class="zan-tag zan-tag--primary">已认证</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+ 
+
+<view>作业如下</view>
+
+<view class="zan-panel">
+    <view class="zan-cell" wx:for="{{teacherworksList}}">
+      <view class="zan-cell__bd" wx:if="{{item.save == '0'}}">未批改</view>
+      <view class="zan-cell__bd" wx:if="{{item.save == '1'}}">已批改</view>
+      <view class="zan-cell__ft" @tap = "checkwork({{item.objectId}})">查看详情作业</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class Teacherswork  extends wepy.page {
+    config = {
+      navigationBarTitleText: '学生作业'
+    }
+    data = {
+      teacher:null,
+      teacherworksList:null,
+      infoList:null,
+
+    }
+    methods = {
+      checkwork(id) {
+        wx.navigateTo({
+           url: "/pages/checkwork?id=" + id
+        })
+      }
+    }
+    onLoad(options) {
+      // 获取当前这位老师的学生提交作业;
+      // 找到当前这名老师的信息;
+      const username = this.$parent.globalData.username;
+      //获取当前的琴行id
+      console.log(options)
+      var workagancyid = options.id;
+
+      console.log(username.username)
+      var self = this;
+      var teachersList = new AV.Query('Teachers');
+      var work = new AV.Query('Work');
+      wx.showLoading({
+        title: '加载中',
+      }); 
+
+      teachersList.equalTo('workagancyId', workagancyid );
+      teachersList.equalTo('username', username.username);
+      teachersList.find().then(res=> {
+        // self.teacher = res;
+        // 这个时候 找到对应的他的学生作业信息;
+        console.log(res);
+        self.teacher = res[0];
+        self.$apply()
+        var teacherId = res[0].id;
+        console.log(teacherId);
+
+        // 开始找这位老师的作业;
+
+        var teacher = AV.Object.createWithoutData('Teachers', teacherId);
+        work.equalTo('teacher',teacher);
+        work.find().then(res2 => {
+          self.teacherworksList = res2;
+          self.$apply();
+        },error2 => {
+          self.teacherworksList = [];
+        })
+        console.log(res);
+        wx.hideLoading() ;
+      },error => {
+        wx.hideLoading() ;
+      });
+    }
+  }
+</script>

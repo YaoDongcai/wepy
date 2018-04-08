@@ -1,0 +1,89 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/tag.wxss';
+  @import '/zanui/color.wxss';
+
+  .zan-card__thumb .zan-card__img {
+    border-radius:45rpx;
+  }
+</style>
+<template>
+
+  <view class="zan-panel">
+    <view class="zan-card" wx:for="{{infoList}}" wx:key="key">
+      <view class="zan-card__thumb">
+        <image class="zan-card__img"
+               src="{{item.coverUrl}}"
+               mode="aspectFit"
+        />
+      </view>
+      <view class="zan-card__detail">
+        <view class="zan-card__detail-row">
+          <view class="zan-card__left-col">{{item.title}}</view>
+          <view class="zan-card__left-col zan-ellipsis--l2">
+          </view>
+        </view>
+
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__right-col">{{item.plantime}}</view>
+          <view class="zan-card__left-col">
+            <view class="zan-c-blue">
+              {{item.des}}
+            </view>
+          </view>
+        </view>
+
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__left-col zan-c-red">
+            <view class="zan-tag zan-tag--primary zan-tag--plain">
+              布置作业
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <zanToptips />
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import zanToptips from '../components/zan-toptips'
+  import api from '../api/api';
+  export default class Current extends wepy.page {
+    config = {
+      navigationBarTitleText: '课后作业'
+    }
+    components = {
+      zanToptips
+    }
+
+
+    data = {
+      infoList :null ,
+      userInfo:null
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      showTopTips() {
+
+      }
+    }
+
+    events = {
+
+    }
+
+    onLoad() {
+      var self = this;
+
+      self.userInfo = this.$parent.globalData.userInfo.username;
+      
+    }
+  }
+</script>

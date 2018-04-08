@@ -1,0 +1,136 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+   @import '/zanui/cell.wxss';
+  @import '/zanui/btn.wxss';
+  .userinfo {
+    display: flex;
+    justify-content: center;
+    height:500rpx;
+    align-items: center;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+
+<template>
+ <view class="zan-panel zan-panel--without-border" style="text-align:center;">
+    <view class="userinfo-avatar">
+      <image src="{{teacher.img_url}}" style="width:200rpx;height:200rpx;border-radius: 50%;"  />
+
+    </view>
+    <view class="userinfo-nickname">
+      {{teacher.name}}
+    </view>
+  </view>
+<view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">艺名</view>
+      <view class="zan-cell__ft">{{teacher.nickname}}</view>
+    </view>
+
+    <view class="zan-cell">
+      <view class="zan-cell__bd">年限</view>
+      <view class="zan-cell__ft">{{teacher.teacher_age}}</view>
+    </view>
+
+
+    <view class="zan-cell" style="justify-content:center">
+      <view class="zan-btn zan-btn--primary" @tap="bindTeacherForStudent({{teacher}})">
+        {{btnName}}
+      </view>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class Teacherdetail extends wepy.page {
+    config = {
+        navigationBarTitleText: '教师详情'
+    }
+    data = {
+      btnName:'建立师生关系',
+      username:null, // 学生信息
+      teacher:null, // 教师详情
+    }
+    methods = {
+        bindTeacherForStudent(teacherId) {
+          // 获得老师的id号
+          // 开始绑定这名学生和老师的关系
+          //  将当前数据开始填充
+          var self = this;
+          console.log(teacherId)
+          var username = self.username;
+          // 写入当前数据;
+          // 查询当前数据是否已经建立关系
+          // StudentBIndToTeacher
+            // 寻找当前用户
+          if(self.btnName == '建立师生关系') {
+            var teacherObject = AV.Object.createWithoutData('Teachers', teacherId.objectId);
+        var StudentBIndToTeacher2 = AV.Object.extend('StudentBIndToTeacher');
+              var todo = new StudentBIndToTeacher2();
+              todo.set("username",username);
+              todo.set("teacherId",teacherObject);
+
+              todo.save().then(res=> {
+                // 建立成功;
+                console.log(res)
+                self.btnName = "已经建立关系";
+                self.$apply();
+              }, error=> {
+                console.log(error)
+              });
+          }
+         
+        }
+    }
+    onLoad(options) {
+      var self = this;
+      var id = options.detailId;
+      console.log('id' + id);
+      const user = AV.User.current();
+      const userInfo = user.toJSON();
+      this.username = userInfo.username;
+
+      // 开始获取这个老师的详情信息;
+      var query = new AV.Query('Teachers');
+      wx.showLoading({
+        title: '加载中',
+      });
+
+      query.get(id).then(function (res) {
+        // 成功获得实例
+        self.teacher = res;
+        console.log(res)
+        wx.hideLoading();
+        self.$apply();
+      }, function (error) {
+        // 异常处理
+        wx.hideLoading();
+        console.log(error)
+      });
+      var StudentBIndToTeacher = new AV.Query('StudentBIndToTeacher');
+          var teacherId = AV.Object.createWithoutData('Teachers', id); 
+          StudentBIndToTeacher.equalTo('username',userInfo.username);
+          StudentBIndToTeacher.equalTo('teacherId',teacherId);
+          StudentBIndToTeacher.find().then(res=> {
+
+            if(res.length == 0) {
+              // 开始提交数据 
+              console.log()
+            }else {
+              // 提醒用户 已经建立了当前关系了
+      
+              self.btnName = "已经建立关系";
+              self.$apply();
+            }
+          },error => {
+            
+          });
+    }
+  }
+</script>

@@ -1,0 +1,92 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+@import '/zanui/btn.wxss';
+.field__title--radius {
+  padding-bottom: 10px;
+}
+.video {
+  width:100%;
+  margin-left:10rpx;
+  margin-right:10rpx;
+}
+</style>
+
+<template>
+  <div class="zan-panel-title">作业</div>
+  <div class="zan-panel">
+    <div class="zan-card">
+      <view class="zan-cell">
+        <view class="zan-cell__bd">标题</view>
+        <view class="zan-cell__ft">{{work.title}}</view>
+      </view> 
+    </div>
+   <!--  <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1> -->
+     <video class="video" src="{{work.fileUrl}}"></video>
+      
+        <view class="zan-cell">
+          <view class="zan-cell__bd">发布时间</view>
+          <view class="zan-cell__ft">{{item.createdAt}}</view>
+        </view>
+        <!--  打分  -->
+       <!--  <view class="zan-cell">
+          <view class="zan-cell__bd">分数</view>
+          <view class="zan-cell__ft">{{work.score || '暂无'}}</view>
+        </view> -->
+
+        <zanField1 :options="base_name" :value="{{score}}" componentId="zanField1"></zanField1>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import zanField from '../components/zan-field'
+  import AV from '../libs/av-weapp-min'
+  export default class Checkwork extends wepy.page {
+    config = {
+      navigationBarTitleText: '作业'
+    }
+    components = {
+      zanField1: zanField
+    }
+    data = {
+      areaIndex:0,
+      teacherList: [],
+      score:'',
+      base_name: {
+        title: '分数',
+        placeholder: '分数'
+      },
+
+      work:null,
+      username:null// 用户id
+    }
+    methods = {
+      
+    }
+
+     events = {
+    zanFieldChange(e) {
+      var self = this;
+      const { componentId, detail } = e
+      self.score  = detail.value;
+      self.$apply();
+    },
+  }
+    onLoad(options) {
+      var self = this;
+      // 获取该学生绑定的教师;
+      const id = options.id;
+      console.log(id)
+    var studentWork = new AV.Query('Work');
+         
+          studentWork.get(id).then(res=> {
+           // 显示作业;
+           console.log(res)
+           self.work = res;
+           self.$apply();
+          },error => {
+            
+          });
+    }
+  }
+</script>

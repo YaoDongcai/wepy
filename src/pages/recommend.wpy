@@ -1,0 +1,28 @@
+<style lang="css">
+
+</style>
+
+
+<template>
+  <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+</template>
+
+
+<script>
+  import wepy from 'wepy'
+  import zanLoadmore from '../components/zan-loadmore'
+  export default class Recommend extends wepy.page {
+    config = {
+      navigationBarTitleText: '推荐计划'
+    }
+    data= {
+      _true: true
+    }
+    components = {
+      zanLoadmore
+    }
+    onLoad() {
+      console.log('hello')
+    }
+  }
+</script>

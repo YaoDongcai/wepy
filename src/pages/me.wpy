@@ -1,0 +1,61 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/icon.wxss';
+
+  .userinfo {
+    display: flex;
+    justify-content: center;
+    height:500rpx;
+    align-items: center;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+
+<template>
+<!-- 个人中心 -->
+  <view class="zan-panel zan-panel--without-border" style="text-align:center;">
+    <view class="userinfo-avatar">
+      <image src="{{userInfo.avatarUrl}}" style="width:200rpx;height:200rpx;border-radius: 50%;"  />
+
+    </view>
+    <view class="userinfo-nickname">
+      {{userInfo.nickName}}
+    </view>
+  </view>
+
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">性别</view>
+      <view class="zan-cell__ft">{{userInfo.gender=='1'?'男':'女'}}</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Me  extends wepy.page {
+    config = {
+      navigationBarTitleText: '我'
+    }
+    data = {
+      userInfo : null
+    }
+    computed = {
+
+    }
+    methods = {
+
+    }
+    onLoad() {
+      console.log('onLoad')
+      // 关于我
+      this.userInfo = this.$parent.globalData.userInfo.userInfo;
+      console.log(this.userInfo);
+    }
+  }
+</script>

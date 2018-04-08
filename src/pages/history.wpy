@@ -1,0 +1,121 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/color.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/btn.wxss';
+  
+  .zan-card__thumb .zan-card__img {
+    border-radius:45rpx;
+  }
+  .video {
+  width:100%;
+  margin-left:10rpx;
+  margin-right:10rpx;
+}
+</style>
+<template>
+ <div class="zan-panel-title">练琴记录</div>
+  <div class="zan-panel">
+    <view class="zan-card" wx:for="{{infoList}}" wx:key="key">
+       <view class="zan-cell">
+        <view class="zan-cell__bd">标题</view>
+        <view class="zan-cell__ft">{{item.title}}</view>
+      </view> 
+       <video class="video" src="{{item.fileUrl}}"></video>
+      <view class="zan-cell">
+          <view class="zan-cell__bd">分数</view>
+          <view class="zan-cell__ft">{{item.score || '暂无'}}</view>
+        </view>
+        <view class="zan-cell">
+          <view class="zan-cell__bd">教师</view>
+          <view class="zan-cell__ft">{{item.teacher.name}}</view>
+        </view>
+        <view class="zan-cell">
+          <view class="zan-cell__bd">发布时间</view>
+          <view class="zan-cell__ft">{{item.createdAt}}</view>
+        </view>
+      <view class="zan-cell">
+        <view class="zan-cell__bd">建议</view>
+       
+      </view> 
+      <view class="zan-cell">
+        <view class="zan-cell__ft">主要是节奏不是很稳哦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦了 啦啦啦啦啦</view>
+       
+      </view> 
+      <view class="zan-cell" style="justify-content: center;">
+        <view class="zan-btn zan-btn--primary">
+       删除
+      </view>
+       
+      </view> 
+    </view>
+  </div>
+<zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../api/api';
+  import AV from '../libs/av-weapp-min'
+    import zanLoadmore from '../components/zan-loadmore'
+  export default class History extends wepy.page {
+    config = {
+      navigationBarTitleText: '练琴记录'
+    }
+    components = {
+      zanLoadmore
+    }
+
+
+    data = {
+        _true: false,
+        infoList :null ,
+        userInfo:null,
+        username: null
+    }
+
+    computed = {
+
+    }
+
+    methods = {
+      showTopTips() {
+
+      }
+    }
+
+    events = {
+
+    }
+
+    onLoad() {
+      var self = this;  
+      const userInfo = this.$parent.globalData.username;
+      
+
+      // 寻找当前用户
+      var historyInfoList = new AV.Query('Work');
+      wx.showLoading({
+        title: '加载中',
+      }); 
+      historyInfoList.equalTo('username',userInfo.username);
+      historyInfoList.include(['teacher'])
+      historyInfoList.find().then(res=> {
+        wx.hideLoading() ;
+        
+        self.infoList = res;
+        console.log(res)
+        if(self.infoList.length == 0) {
+          self._true = true;
+        }
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.infoList =[];
+      });
+
+      
+    }
+  }
+</script>

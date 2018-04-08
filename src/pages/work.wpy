@@ -1,0 +1,184 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+@import '/zanui/btn.wxss';
+.field__title--radius {
+  padding-bottom: 10px;
+}
+.video {
+  width:100%;
+  margin-left:10rpx;
+  margin-right:10rpx;
+}
+</style>
+
+<template>
+  <div class="zan-panel-title">提交作业</div>
+  <div class="zan-panel">
+    <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1>
+
+    <view class="zan-cell zan-field">
+      <view class="zan-cell__hd zan-field__title">选择教师</view>
+      <picker
+        mode="selector"
+        class="zan-field__input zan-cell__bd"
+        range="{{ teacherList }}"
+        range-key="name"
+        value="{{ areaIndex }}"
+        bindchange="onAreaChange"
+      >
+        {{ teacherList[areaIndex].name }}
+      </picker>
+
+     </view> 
+    <div class="zan-cell "  @tap = "chooseVideo">
+      <view class="zan-cell__hd">
+      选择视频</view>
+     
+    </div>
+    <video class="video" src="{{video}}" wx:if="{{video}}"></video>
+    <view class="zan-cell" style="justify-content:center">
+      <view class="zan-btn zan-btn--primary" @tap = "uploadFile" wx:if="{{video}}">
+       提交作业
+      </view>
+    </view>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import zanField from '../components/zan-field'
+  import AV from '../libs/av-weapp-min'
+  export default class Work extends wepy.page {
+    config = {
+      navigationBarTitleText: '作业'
+    }
+    components = {
+      zanField1: zanField
+    }
+    data = {
+      areaIndex:0,
+      teacherList: [],
+
+      base_name: {
+        title: '作业名称',
+        placeholder: '作业名称'
+      },
+
+      title:'',// 填写标题
+      video:null, // 本地视频地址
+      fileUrl:'',// 上传的视频地址
+      username:null// 用户id
+    }
+    methods = {
+      onAreaChange(e) {
+        this.areaIndex = e.detail.value;
+        this.$apply()
+      },
+      uploadFile() {
+        var self = this;
+        // 开始上传;
+       wx.showLoading({
+        title: '提交中',
+      }); 
+        new AV.File('自拍视频', {
+      blob: {
+        uri: self.video,
+      },
+    }).save().then(
+      file => {
+        const fileUrl = file.url()
+        // 需要将当前的数据会写到服务器中;
+        const username = this.$parent.globalData.username;
+        const WorkClass = AV.Object.extend('Work');
+        const Work = new WorkClass();
+
+        Work.set('title',self.title);// 设置标题
+        Work.set('fileUrl',fileUrl)// 设置视频路径
+        Work.set('username', username.username)// 设置用户的ID
+        // 当前的teacher 信息;
+        var teacherId = self.teacherList[self.areaIndex].id;
+        console.log(self.teacherList[self.areaIndex].id);
+        var teacher = AV.Object.createWithoutData('Teachers',teacherId);  
+        Work.set('teacher', teacher);
+        Work.save().then(success=> {
+          console.log(success.id);
+          console.log('作业提交成功');
+          // 作业提交成功 // 回到我的提交作业页面;
+          wx.hideLoading() ;
+          wx.showToast({
+              title: '提交成功',
+              icon: 'success',
+              duration: 2000
+            });
+          wx.navigateTo({
+          url: "/pages/home"
+        })
+        }, error => {
+          wx.showToast({
+              title: '提交失败',
+              icon: 'success',
+              duration: 2000
+            })
+          console.log(error.message)
+        })  
+      }
+      
+    ).catch(console.error);
+      },
+      // 选择视频;
+      chooseVideo() {
+          // 上传视频;
+          // 
+        var that = this;
+        wx.chooseVideo({
+        sourceType: ['album', 'camera'],
+        maxDuration:60,
+        camera: 'back',
+        success: function (res) {
+          console.log(res.tempFilePath)
+          that.video = res.tempFilePath;
+          that.$apply();
+        }
+    })
+      }
+    }
+
+     events = {
+    zanFieldChange(e) {
+      var self = this;
+      const { componentId, detail } = e
+      self.title  = detail.value;
+      self.$apply();
+    },
+  }
+    onLoad() {
+      var self = this;
+      const username = this.$parent.globalData.username;
+
+      // 获取该学生绑定的教师;
+
+var StudentBIndToTeacher = new AV.Query('StudentBIndToTeacher');
+          StudentBIndToTeacher.include(['teacherId']);
+          StudentBIndToTeacher.equalTo('username',username.username);
+          StudentBIndToTeacher.find().then(res=> {
+            console.log(res)
+            if(res.length == 0) {
+             // 提醒用户当前还没有绑定教师,请先去别的地方去绑定吧;
+              wx.showToast({
+              title: '暂无老师,先去绑定师生关系哦',
+              duration: 2000
+            })
+            }else {
+              // 提醒用户 已经建立了当前关系了
+              for(var i=0;i< res.length ;i++) {
+                self.teacherList.push(res[i].get('teacherId'));
+              }
+
+              self.$apply();
+            }
+          },error => {
+            
+          });
+    }
+  }
+</script>

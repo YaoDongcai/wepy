@@ -1,0 +1,94 @@
+<style lang="scss">
+
+
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+import AV from './libs/av-weapp-min';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/home', 
+      "pages/history", 
+      "pages/recommend", 
+      "pages/current",
+      "pages/me",
+      "pages/teachers", 
+      "pages/work", 
+      "pages/workagancy", 
+      "pages/teacherdetail", 
+      "pages/teachersworks",
+      "pages/teacherworkagancy",
+      "pages/checkwork"
+    ],
+
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    },
+
+    "tabBar": {
+      "color": "#999999",
+      "selectedColor": "#ff6a3c",
+      "backgroundColor": "#ffffff",
+      "borderStyle": "black",
+      "list":[{
+        "pagePath":"pages/home",
+        "text":"成长计划",
+        "iconPath":"images/icon_home.png",
+        "selectedIconPath":"images/icon_home_active.png"
+      },{
+        "pagePath":"pages/workagancy",
+        "text":"课程列表",
+        "iconPath":"images/icon_classify.png",
+        "selectedIconPath":"images/icon_classify_active.png"
+      },{
+        "pagePath":"pages/me",
+        "text":"个人中心",
+        "iconPath":"images/icon_info.png",
+        "selectedIconPath":"images/icon_info_active.png"
+      }]
+    }
+  }
+  constructor() {
+    super()
+    this.use('requestfix'); // 中间件必须要含有
+    this.use('promisify');
+  }
+
+  globalData = {
+    userInfo: null,
+    username: null, //用户小程序登录的唯一ID
+  }
+
+
+  async onLaunch() {
+    // 开始初始化这个组件
+    console.log('app.wpy onLaunch')
+    var self = this;
+
+    await wepy.login();
+    
+    self.globalData.userInfo = await wepy.getUserInfo();
+//    console.log(self.globalData.userInfo)
+  }
+
+  getUserInfo(cb) {
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        cb && cb(res.userInfo)
+      }
+    })
+  }
+}
+</script>

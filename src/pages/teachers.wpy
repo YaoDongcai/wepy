@@ -1,0 +1,93 @@
+<style>
+  @import '/zanui/panel.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/tag.wxss';
+  @import '/zanui/color.wxss';
+
+  .zan-card__thumb .zan-card__img {
+    border-radius:45rpx;
+  }
+</style>
+
+<template>
+<!-- 所有老师的详情 -->
+  <view class="zan-panel">
+    <view class="zan-card" wx:for="{{infoList}}" wx:key="key" @tap="toTeacherDetails({{item.objectId}})">
+      <view class="zan-card__thumb">
+        <image class="zan-card__img"
+               src="{{item.img_url}}"
+               mode="aspectFit"
+        />
+      </view>
+      <view class="zan-card__detail">
+        <view class="zan-card__detail-row">
+          <view class="zan-card__left-col">{{item.nickname}}</view>
+          <view class="zan-card__left-col zan-ellipsis--l2">
+          </view>
+        </view>
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__right-col">
+            <view class="zan-tag zan-tag--primary">{{item.music_instruments}}</view></view>
+          <view class="zan-card__left-col">
+            {{item.teacher_methods}}
+          </view>
+        </view>
+
+        <view class="zan-card__detail-row zan-c-gray-darker">
+          <view class="zan-card__left-col zan-c-red">
+            <view class="zan-tag zan-tag--primary">已认证</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <zanToptips />
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  import zanToptips from '../components/zan-toptips'
+  import api from '../api/api';
+  export default class Teachers  extends wepy.page {
+    config = {
+      navigationBarTitleText: '教师详情'
+    }
+    methods = {
+      // 对应的详细信息;
+      // 找到老师详情信息；开始对老师绑定师生关系
+      toTeacherDetails(id) {
+        // 这名老师的详情信息
+        var url = "/pages/teacherdetail?detailId=" + id
+          wx.navigateTo({
+           url: url,
+        })
+      } 
+    }
+    data= {
+      userInfo:null,
+      username: null,
+      infoList: null // 教师详细list
+    }
+    onLoad(options) {
+
+      var id = options.teachersId;
+      var self = this;
+
+      // 寻找当前用户
+      var teachersList = new AV.Query('Teachers');
+      wx.showLoading({
+        title: '加载中',
+      }); 
+      teachersList.equalTo('workagancyId', id);
+      teachersList.find().then(res=> {
+        self.infoList = res;
+        wx.hideLoading() ;
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.infoList =[];
+      });
+    }
+  }
+</script>

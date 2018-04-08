@@ -1,0 +1,182 @@
+<style lang="css">
+  @import '/zanui/col.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/panel.wxss';
+  .zan-panel {
+    border-radius: 15rpx;
+    margin-left: 5rpx;
+    margin-bottom:-3rpx;
+    margin-right: 5rpx;
+  }
+  .card {
+    width:100%;
+    height:200rpx;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#ff6a3c;
+  }
+  .card .title {
+    color:white;
+  }
+
+</style>
+<template>
+
+<view class="zan-panel" wx:if="{{type == '0'}}">
+    <view class="card">
+      <view class="title">
+        教师版
+      </view>
+    </view>
+  </view>
+
+<view class="zan-panel" wx:if="{{type == '0'}}">
+    <view class="card" @tap="toworkagancy">
+      <view class="title">
+        作业提交
+      </view>
+    </view>
+  </view>
+
+
+  <view class="zan-panel" style="" wx:if="{{type == '1'}}">
+    <view class="card" @tap="toHistoryInfo">
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/92660cf0a813cb55ea55.jpg" style="width:100%;height:100%;" ></image>
+      <!-- <view class="title" >
+        历史情况
+      </view> -->
+    </view>
+  </view>
+  <view class="zan-panel" wx:if="{{type == '1'}}">
+    <view class="card" @tap="toCurrentTask">
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/138069852a11b98dc2f7.jpg" style="width:100%;height:100%;" ></image>
+      <!-- <view class="title">
+        当前任务
+      </view> -->
+    </view>
+  </view>
+  <view class="zan-panel" wx:if="{{type == '1'}}">
+    <view class="card" @tap="toRecommendPlan">
+     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/5259d2cf41e01edd73bf.jpg" style="width:100%;height:100%;" ></image>
+     <!--  <view class="title">
+        推荐计划
+      </view> -->
+    </view>
+  </view>
+  <view class="zan-panel" wx:if="{{type == '1'}}">
+    <view class="card" @tap="toSubmitWork">
+      <view class="title">
+        作业提交
+      </view>
+    </view>
+  </view>
+  <zanToptips />
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min';
+  import zanToptips from '../components/zan-toptips'
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页'
+    }
+
+//    //  初始化信息：
+
+
+
+
+  components = {
+      zanToptips
+    }
+    onShow(){
+//      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
+    }
+    data = {
+      type: null,
+      userInfo: null,
+    }
+
+
+    computed = {
+
+    }
+
+    methods = {
+      toworkagancy()  {
+         wx.navigateTo({
+           url: "/pages/teacherworkagancy"
+        })
+       },
+      // 教师版本的提交的作业;
+      teachersForWork() {
+        wx.navigateTo({
+           url: "/pages/workhistory"
+        })
+      },
+      // 历史情况页面
+      toHistoryInfo() {
+        wx.navigateTo({
+           url: "/pages/history"
+        })
+      },
+      //当前任务页面
+      toCurrentTask() {
+        wx.navigateTo({
+          url: "/pages/current"
+        })
+      },
+      // 推荐计划页面
+      toRecommendPlan() {
+        wx.navigateTo({
+          url: "/pages/recommend"
+        })
+      },
+      toSubmitWork() {
+        wx.navigateTo({
+          url: "/pages/work"
+        })
+      }
+    }
+
+    events = {
+
+    }
+
+    onShow() {
+
+    }
+
+
+    onLoad() {
+    var self = this;
+    AV.init({
+      appId: 'yUB1LBCTwiuuKyfKw3llTtE9-gzGzoHsz',
+      appKey: 'WCpB4WnDow9x5coqBjad4lXY',
+    });
+    // 表示开始用这个用户去登录;
+    AV.User.loginWithWeapp().then(user => {
+      self.$parent.globalData.username = user.toJSON();
+      //
+      var query = new AV.Query('_User');
+      query.get(user.id).then(res=> {
+        console.log(res.get('auth'))
+        if(res.get('auth') == '' ){
+          self.type = '';
+        }else if(res.get('auth') == '0') {
+          self.type = '0';
+        }else {
+         self.type = '1';
+        };
+        self.$apply();
+      },error => {
+
+      });
+    }).catch(console.error);
+
+    }
+  }
+</script>
