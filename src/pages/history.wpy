@@ -4,7 +4,7 @@
   @import '/zanui/color.wxss';
   @import '/zanui/cell.wxss';
   @import '/zanui/btn.wxss';
-  
+
   .zan-card__thumb .zan-card__img {
     border-radius:45rpx;
   }
@@ -21,7 +21,7 @@
        <view class="zan-cell">
         <view class="zan-cell__bd">标题</view>
         <view class="zan-cell__ft">{{item.title}}</view>
-      </view> 
+      </view>
        <video class="video" src="{{item.fileUrl}}"></video>
       <view class="zan-cell">
           <view class="zan-cell__bd">分数</view>
@@ -37,18 +37,18 @@
         </view>
       <view class="zan-cell">
         <view class="zan-cell__bd">建议</view>
-       
-      </view> 
+
+      </view>
       <view class="zan-cell">
-        <view class="zan-cell__ft">主要是节奏不是很稳哦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦了 啦啦啦啦啦</view>
-       
-      </view> 
+        <view class="zan-cell__ft">{{item.description || '暂无评价'}}</view>
+
+      </view>
       <view class="zan-cell" style="justify-content: center;">
         <view class="zan-btn zan-btn--primary">
        删除
       </view>
-       
-      </view> 
+
+      </view>
     </view>
   </div>
 <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
@@ -90,20 +90,20 @@
     }
 
     onLoad() {
-      var self = this;  
+      var self = this;
       const userInfo = this.$parent.globalData.username;
-      
+
 
       // 寻找当前用户
       var historyInfoList = new AV.Query('Work');
       wx.showLoading({
         title: '加载中',
-      }); 
+      });
       historyInfoList.equalTo('username',userInfo.username);
       historyInfoList.include(['teacher'])
       historyInfoList.find().then(res=> {
         wx.hideLoading() ;
-        
+
         self.infoList = res;
         console.log(res)
         if(self.infoList.length == 0) {
@@ -115,7 +115,7 @@
         self.infoList =[];
       });
 
-      
+
     }
   }
 </script>

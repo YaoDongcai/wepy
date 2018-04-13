@@ -11,18 +11,20 @@ import AV from './libs/av-weapp-min';
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/home', 
-      "pages/history", 
-      "pages/recommend", 
+      'pages/home',
+      "pages/history",
+      "pages/recommend",
       "pages/current",
       "pages/me",
-      "pages/teachers", 
-      "pages/work", 
-      "pages/workagancy", 
-      "pages/teacherdetail", 
+      "pages/teachers",
+      "pages/work",
+      "pages/workagancy",
+      "pages/teacherdetail",
       "pages/teachersworks",
       "pages/teacherworkagancy",
-      "pages/checkwork"
+      "pages/checkwork",
+      "pages/joinworkagancy",
+      "pages/modifyteacher"
     ],
 
     window: {
@@ -73,7 +75,7 @@ export default class extends wepy.app {
     var self = this;
 
     await wepy.login();
-    
+
     self.globalData.userInfo = await wepy.getUserInfo();
 //    console.log(self.globalData.userInfo)
   }

@@ -1,0 +1,71 @@
+<style>
+  @import '/zanui/col.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/panel.wxss';
+  .zan-panel {
+    border-radius: 15rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+  }
+  .card {
+    width:100%;
+    height:200rpx;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#ff6a3c;
+  }
+  .card .title {
+    color:white;
+  }
+</style>
+
+<template>
+  <view class="zan-panel"  wx:for="{{infoList}}" wx:key="key">
+    <view class="card" @tap="toTeachers({{item}})">
+      <view class="title" >
+        {{item.title}}
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class JoinWorkagancy  extends wepy.page {
+    config = {
+      navigationBarTitleText: '琴行名称'
+    }
+    data = {
+      infoList:null,
+    }
+    methods = {
+      toTeachers(item) {
+        var url = "/pages/modifyteacher?workagancyId=" + item.objectId
+        wx.navigateTo({
+          url: url,
+        })
+      }
+    }
+    onLoad() {
+      // 获取琴行信息;
+      //
+      var workAgancy = new AV.Query('WorkAgancy');
+      wx.showLoading({
+        title: '加载中',
+      });
+      var self = this;
+      workAgancy.find().then(res=> {
+        wx.hideLoading() ;
+        console.log(res)
+        self.infoList = res;
+
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.infoList =[];
+      });
+    }
+  }
+</script>

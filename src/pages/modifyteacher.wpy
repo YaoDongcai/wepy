@@ -1,0 +1,219 @@
+<style>
+  @import '/zanui/panel.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/icon.wxss';
+  @import '/zanui/btn.wxss';
+  .icon-wrap {
+    width: 33.33333%;
+    height: 100px;
+    float: left;
+    text-align: center;
+  }
+  .icon-classname {
+    color: #999;
+    font-size: 10px;
+  }
+  .zan-icon {
+    font-size: 24px;
+    margin: 20px;
+  }
+
+  .userinfo {
+    display: flex;
+    justify-content: center;
+    height:500rpx;
+    align-items: center;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
+</style>
+
+<template>
+    <!-- 先显示图片 -->
+  <view class="zan-panel zan-panel--without-border" style="text-align:center;">
+    <view class="userinfo-avatar" @tap="choiseImage()">
+      <image wx:if="{{profile.img_url !== ''}}" src="{{profile.img_url}}" style="width:200rpx;height:200rpx;border-radius: 50%;"  />
+      <view class="zan-icon zan-icon-photo"  wx:if="{{profile.img_url == ''}}" style="background-color:#b8b8b8;width:200rpx;height:200rpx;border-radius: 50%;line-height: 200rpx;" >
+      </view>
+    </view>
+    <view class="userinfo-nickname">
+      {{profile.nickname}}
+    </view>
+  </view>
+
+  <!-- 表单提交 -->
+
+    <view class="zan-panel-title">教师信息填写(请认真填写)</view>
+
+    <form bindsubmit="formSubmit" bindreset="formReset">
+      <view class="zan-panel">
+        <zanField1 :options="form_name" componentId="zanField1"></zanField1>
+        <!--<zanField2 :options="form_tel" componentId="zanField2"></zanField2>-->
+        <!--<zanField3 :options="form_name" componentId="zanField3"></zanField3>-->
+        <!--<zanField4 :options="form_tel" componentId="zanField4"></zanField4>-->
+        <!--<zanField5 :options="form_name" componentId="zanField5"></zanField5>-->
+        <!--<zanField6 :options="form_tel" componentId="zanField6"></zanField6>-->
+        <!--<zanField7 :options="form_name" componentId="zanField7"></zanField7>-->
+
+          <view
+            class="zan-btn zan-btn--primary"
+            formType="submit">提交</view>
+      </view>
+    </form>
+
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  import zanField from '../components/zan-field'
+  export default class Modifyteacher  extends wepy.page {
+    config = {
+      navigationBarTitleText: '加入琴行'
+    }
+
+    components = {
+
+      zanField1 : zanField,
+      zanField2 : zanField,
+      zanField3 : zanField,
+      zanField4 : zanField,
+      zanField5 : zanField,
+      zanField6 : zanField,
+      zanField7 : zanField,
+
+    }
+
+    data = {
+
+      // Form 中使用输入框
+      form_name: {
+        name: 'name',
+        placeholder: '请输入真实姓名',
+      },
+
+      form_nickname: {
+        name: 'nickname',
+        placeholder: '请输入平台昵称',
+      },
+
+      form_dipnoma: {
+        name:'dipnoma',
+        placeholder:'请输入'
+      },
+
+      types:'提交',
+      id:null, // 表示当前这名用户的一些数据;
+
+      profile: {
+        name:'',
+        teacher_ideas:'',
+        nickname:'',
+        teacher_age:'',
+        img_url:'',
+        dipnoma:'',
+        teacher_methods:'',
+        music_instruments:'',
+      }
+    }
+
+    events ={
+      zanFieldChange(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:change]', componentId, detail)
+      },
+
+      zanFieldFocus(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:focus]', componentId, detail)
+      },
+
+      zanFieldBlur(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:blur]', componentId, detail)
+      }
+    }
+    methods = {
+      // 提交的数据
+      formSubmit(event) {
+        console.log('[zan:field:submit]', event.detail.value)
+      },
+
+
+      choiseImage() {
+        // 选择图像;
+        var that = this;
+        wx.chooseImage({
+          // 设置最多可以选择的图片张数，默认9,如果我们设置了多张,那么接收时//就不在是单个变量了,
+          count: 1,
+          sizeType: ['original', 'compressed'], // original 原图，compressed 压缩图，默认二者都有
+          sourceType: ['album', 'camera'], // album 从相册选图，camera 使用相机，默认二者都有
+          success: function(res){
+            // 获取成功,将获取到的地址赋值给临时变量
+//            console.log(that.profile.get('img_url'));
+
+            that.profile.img_url = res.tempFilePaths[0];
+
+//            console.log(that.profile.get('img_url'))
+            that.$apply();
+//            that.setData({
+//              //将临时变量赋值给已经在data中定义好的变量
+//              avatarUrl:tempFilePaths
+//            })
+          },
+          fail: function(res) {
+            // fail
+          },
+          complete: function(res) {
+            // complete
+          }
+        })
+      }
+    }
+    onLoad(options) {
+      // 获取当前的琴行id; 待会需要将这个id来create
+      //  如果是已经上传过了，那么就是修改：
+      let workagancyId = options.workagancyId;
+      // 获取当前这个老师的信息;
+      var teacher = new AV.Query('Teachers');
+      let username = this.$parent.globalData.username;
+      teacher.equalTo('username', username.username);
+      teacher.equalTo('workagancyId',workagancyId)
+      wx.showLoading({
+        title: '加载中',
+      });
+
+      var self = this;
+      teacher.find().then(res=> {
+        wx.hideLoading() ;
+
+        if(res.length >0) {
+          // 表示找到该教师;
+          self.types = '修改';
+          self.id = res[0].id;
+          let teacher = res[0];
+          self.profile={
+            name: teacher.get('name'),
+            teacher_ideas: teacher.get('teacher_ideas'),
+            nickname: teacher.get('nickname'),
+            teacher_age: teacher.get('teacher_age'),
+            img_url: teacher.get('img_url'),
+            dipnoma: teacher.get('dipnoma'),
+            teacher_methods: teacher.get('teacher_methods'),
+            music_instruments: teacher.get('music_instruments'),
+          };
+        }
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.profile =[];
+      });
+    }
+  }
+</script>

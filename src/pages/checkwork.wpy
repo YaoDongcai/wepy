@@ -1,39 +1,70 @@
 <style lang="css">
+
   @import '/zanui/panel.wxss';
-@import '/zanui/btn.wxss';
-.field__title--radius {
-  padding-bottom: 10px;
-}
-.video {
-  width:100%;
-  margin-left:10rpx;
-  margin-right:10rpx;
-}
+  @import '/zanui/btn.wxss';
+
+  .field__title--radius {
+    padding-bottom: 10px;
+  }
+
+  .video {
+    width:100%;
+    margin-left: 10rpx;
+    margin-right: 10rpx;
+  }
 </style>
 
 <template>
   <div class="zan-panel-title">作业</div>
   <div class="zan-panel">
     <div class="zan-card">
+
       <view class="zan-cell">
         <view class="zan-cell__bd">标题</view>
         <view class="zan-cell__ft">{{work.title}}</view>
-      </view> 
-    </div>
-   <!--  <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1> -->
-     <video class="video" src="{{work.fileUrl}}"></video>
-      
-        <view class="zan-cell">
-          <view class="zan-cell__bd">发布时间</view>
-          <view class="zan-cell__ft">{{item.createdAt}}</view>
-        </view>
-        <!--  打分  -->
-       <!--  <view class="zan-cell">
-          <view class="zan-cell__bd">分数</view>
-          <view class="zan-cell__ft">{{work.score || '暂无'}}</view>
-        </view> -->
+      </view>
 
+    </div>
+    <!--  <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1> -->
+    <video class="video" src="{{work.fileUrl}}"></video>
+
+    <view class="zan-cell">
+      <view class="zan-cell__bd">发布时间</view>
+      <view class="zan-cell__ft">{{item.createdAt}}</view>
+    </view>
+    <div wx:if="{{mark == '1'}}">
+      <view class="zan-cell">
+        <view class="zan-cell__bd">分数</view>
+        <view class="zan-cell__ft">{{score}}</view>
+      </view>
+      <view class="zan-cell">
+        <view class="zan-cell__bd">评价</view>
+        <view class="zan-cell__ft">{{textArea}}</view>
+      </view>
+    </div>
+
+
+      <div wx:if="{{mark=='0'}}">
         <zanField1 :options="base_name" :value="{{score}}" componentId="zanField1"></zanField1>
+        <!-- 评语 -->
+        <textarea  bindinput="setTextarea"  placeholder="输入评语" name="textarea" style="margin:0 auto;height:120rpx;"  adjust-position="true"/>
+
+      </div>
+
+      <view class="zan-cell" style="justify-content: center;">
+
+        <view class="zan-btn zan-btn--disabled" disabled wx:if="{{mark == '1'}}">
+          已批改
+        </view>
+
+        <view @tap="bindFormSubmit" class="zan-btn zan-btn--primary" wx:if="{{mark == '0'}}">
+          请批改
+        </view>
+      </view>
+
+    <!-- 开始提交 -->
+
+
   </div>
 </template>
 
@@ -47,46 +78,78 @@
     }
     components = {
       zanField1: zanField
-    }
+    };
+
     data = {
-      areaIndex:0,
+      areaIndex: 0,
       teacherList: [],
-      score:'',
+      score: '',
       base_name: {
         title: '分数',
         placeholder: '分数'
       },
+      mark:'0',
+      textArea:'',
+      work: null,
+      username: null// 用户id
+    };
 
-      work:null,
-      username:null// 用户id
-    }
     methods = {
-      
+      setTextarea(e) {
+        var self = this;
+        self.textArea = e.detail.value;
+      },
+      bindFormSubmit: function(e) {
+        var self = this;
+        // 提交数据到后台;
+        var id = self.work.id;
+        console.log(self.work);
+        console.log(self.work.get('mark'));
+        var work = AV.Object.createWithoutData('Work', id);
+        // 修改属性
+        work.set('description', self.textArea);
+        work.set('score',self.score);
+        work.set('mark','1');
+        // 保存到云端
+        work.save().then(res => {
+          // 表示成功
+          self.mark = '1';
+          self.$apply();
+        },error=> {
+          // 表示失败
+
+        });
+      }
     }
 
-     events = {
-    zanFieldChange(e) {
-      var self = this;
-      const { componentId, detail } = e
-      self.score  = detail.value;
-      self.$apply();
-    },
-  }
+    events = {
+      zanFieldChange(e) {
+        var self = this;
+        const {componentId, detail} = e
+        self.score = detail.value;
+        self.$apply();
+      },
+    }
+
     onLoad(options) {
       var self = this;
       // 获取该学生绑定的教师;
       const id = options.id;
       console.log(id)
-    var studentWork = new AV.Query('Work');
-         
-          studentWork.get(id).then(res=> {
-           // 显示作业;
-           console.log(res)
-           self.work = res;
-           self.$apply();
-          },error => {
-            
-          });
+      var studentWork = new AV.Query('Work');
+
+      studentWork.get(id).then(res => {
+        // 显示作业;
+        console.log(res)
+        self.work = res;
+
+        self.score = self.work.get('score');
+        self.textArea = self.work.get('description');
+        self.mark = self.work.get('mark');
+        self.$apply();
+      }, error => {
+
+      });
     }
   }
 </script>

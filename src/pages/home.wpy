@@ -2,6 +2,7 @@
   @import '/zanui/col.wxss';
   @import '/zanui/row.wxss';
   @import '/zanui/panel.wxss';
+  @import '/zanui/btn.wxss';
   .zan-panel {
     border-radius: 15rpx;
     margin-left: 5rpx;
@@ -23,6 +24,24 @@
 </style>
 <template>
 
+<!-- 首次进来 让用户去选择 -->
+    <view wx:if="{{type == ''}}">
+      <view class="zan-panel-title">首次身份选择</view>
+      <form bindsubmit="formSubmit">
+        <view class="zan-panel">
+          <view>
+            <zanSelect3 :items="items" :checkedValue.sync="checked_form" name="formtest" componentId="form"></zanSelect3>
+          </view>
+        </view>
+
+        <view class="zan-btns">
+          <button
+            class="zan-btn zan-btn--primary"
+            formType="submit">确定</button>
+        </view>
+      </form>
+    </view>
+
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card">
       <view class="title">
@@ -39,6 +58,13 @@
     </view>
   </view>
 
+  <view class="zan-panel" wx:if="{{type == '0'}}">
+    <view class="card" @tap="joinworkagancy">
+      <view class="title">
+        加入琴行
+      </view>
+    </view>
+  </view>
 
   <view class="zan-panel" style="" wx:if="{{type == '1'}}">
     <view class="card" @tap="toHistoryInfo">
@@ -78,19 +104,17 @@
   import wepy from 'wepy'
   import AV from '../libs/av-weapp-min';
   import zanToptips from '../components/zan-toptips'
-
+  import zanSelect from '../components/zan-select'
   export default class Home extends wepy.page {
     config = {
       navigationBarTitleText: '首页'
-    }
+    };
 
 //    //  初始化信息：
 
-
-
-
   components = {
-      zanToptips
+    zanSelect3: zanSelect,
+    zanToptips
     }
     onShow(){
 //      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
@@ -98,6 +122,20 @@
     data = {
       type: null,
       userInfo: null,
+      activeColor: '#4b0',
+      items: [
+        {
+          padding: 0,
+          value: '0',
+          name: '教员'
+        },
+        {
+          padding: 0,
+          value: '1',
+          name: '学员'
+        }
+      ],
+      checked_form: -1,
     }
 
 
@@ -106,11 +144,38 @@
     }
 
     methods = {
+      // 获取身份提交的数据
+      formSubmit(event) {
+       let type = event.detail.value.formtest;
+        if(type == '') {
+          // 提醒用户需要选择一个身份
+          this.$invoke('zanToptips', 'showZanTopTips', { content: `请选择一个身份,且永久不可更改!` })
+        }else {
+          // 提交用户的数据;
+          var self = this;
+          const user = AV.User.current();
+          user.set({
+            auth:type
+          }).save().then(res=> {
+            self.type = '' + type;
+            self.$apply();
+          }, error => {
+
+          });
+        }
+      },
+
       toworkagancy()  {
          wx.navigateTo({
            url: "/pages/teacherworkagancy"
         })
        },
+      // 加入琴行
+      joinworkagancy() {
+        wx.navigateTo({
+          url: "/pages/joinworkagancy"
+        })
+      },
       // 教师版本的提交的作业;
       teachersForWork() {
         wx.navigateTo({
@@ -143,7 +208,11 @@
     }
 
     events = {
-
+      zanSelectChange(value, event) {
+        let { componentId } = event.source
+        this[`checked_${componentId}`] = value
+        this.$apply()
+      }
     }
 
     onShow() {

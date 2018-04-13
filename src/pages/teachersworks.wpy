@@ -49,14 +49,14 @@
       </view>
     </view>
   </view>
- 
+
 
 <view>作业如下</view>
 
 <view class="zan-panel">
-    <view class="zan-cell" wx:for="{{teacherworksList}}">
-      <view class="zan-cell__bd" wx:if="{{item.save == '0'}}">未批改</view>
-      <view class="zan-cell__bd" wx:if="{{item.save == '1'}}">已批改</view>
+    <view class="zan-cell" wx:for="{{teacherworksList}}" wx:key="key">
+      <view class="zan-cell__bd" wx:if="{{item.mark == '0'}}">未批改</view>
+      <view class="zan-cell__bd" wx:if="{{item.mark == '1'}}">已批改</view>
       <view class="zan-cell__ft" @tap = "checkwork({{item.objectId}})">查看详情作业</view>
     </view>
   </view>
@@ -96,7 +96,7 @@
       var work = new AV.Query('Work');
       wx.showLoading({
         title: '加载中',
-      }); 
+      });
 
       teachersList.equalTo('workagancyId', workagancyid );
       teachersList.equalTo('username', username.username);
