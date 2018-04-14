@@ -18,6 +18,48 @@
   .card .title {
     color:white;
   }
+  .zan-col.zan-col-8 image{
+    width:100%;
+    margin-top:10rpx;
+    margin-bottom:10rpx;
+    height:200rpx;
+  }
+  .teacher-item {
+    margin-top:40rpx;
+    margin-bottom:40rpx;
+  }
+  .teacher-name {
+    height:40rpx;
+    font-size:35rpx;
+    color:rgb(120,63,4);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .teacher-score {
+   height:40rpx;
+ font-size:35rpx;
+    color:rgb(255,153,0);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .teacher-workagancy {
+    height:40rpx;
+    font-size:20rpx;
+    color:rgb(136,136,136);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .zan-col.zan-col-8 .teacher-rank {
+    font-size:40rpx;
+    text-align: center;
+    display: flex;
+    height: 200rpx;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <template>
@@ -27,6 +69,33 @@
         {{item.title}}
       </view>
     </view>
+  </view>
+
+
+
+  <view class="zan-panel">
+      <view class="zan-row" style="background-color:rgb(249, 249, 249)">
+        <view class="zan-col zan-col-8">
+          <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5aa9547f1f289.jpg" ></image>
+        </view>
+        <view class="zan-col zan-col-8">
+          <view class="teacher-item">
+             <view class="teacher-name">
+            大臣小小
+          </view>
+          <view class="teacher-score">
+            ★★★★★ 10分
+          </view>
+          <view class="teacher-workagancy">
+            初练音乐工作室
+          </view>
+          </view>
+         
+        </view>
+        <view class="zan-col zan-col-8">
+         <view class="teacher-rank"> 第1名</view>
+        </view>
+      </view>
   </view>
 </template>
 

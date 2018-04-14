@@ -20,6 +20,35 @@
   .card .title {
     color:white;
   }
+.title-item {
+  font-size:14px;
+  margin-top:10px;
+  margin-left:10px;
+  margin-bottom:5rpx;
+  color:rgb(102, 102, 102)
+  background-color: rgb(109, 147, 225);
+  line-height: 16px;
+  height:16px;
+}
+
+.zan-col image {
+ width:100px;
+ height:90px;
+ border-radius: 0;
+}
+
+.album-title{
+  position: absolute;
+  left: 0;
+  bottom:0;
+  width: 100%;
+  line-height: 1.6em;
+  background-color: rgba(0,0,0,.5);
+  text-decoration: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 </style>
 <template>
@@ -42,6 +71,24 @@
       </form>
     </view>
 
+
+
+
+<!-- 轮播图展示  -->
+<view wx:if="{{type != ''}}">
+  <swiper indicator-dots='true'
+  autoplay='true'>
+  <block wx:for="{{imgUrls}}" wx:key="key">
+    <swiper-item style="width:100%;height:200rpx;">
+      <image src="{{item}}" />
+    </swiper-item>
+  </block>
+</swiper>
+</view>
+
+<view class="title-item">
+  初练成长计划
+</view>
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card">
       <view class="title">
@@ -68,35 +115,59 @@
 
   <view class="zan-panel" style="" wx:if="{{type == '1'}}">
     <view class="card" @tap="toHistoryInfo">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/92660cf0a813cb55ea55.jpg" style="width:100%;height:100%;" ></image>
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/3a36b14236bf39b5acdd.jpg" style="width:100%;height:100%;" ></image>
       <!-- <view class="title" >
         历史情况
       </view> -->
     </view>
   </view>
-  <view class="zan-panel" wx:if="{{type == '1'}}">
+ <!--  <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="card" @tap="toCurrentTask">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/138069852a11b98dc2f7.jpg" style="width:100%;height:100%;" ></image>
-      <!-- <view class="title">
-        当前任务
-      </view> -->
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
     </view>
-  </view>
+  </view> -->
   <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="card" @tap="toRecommendPlan">
-     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/5259d2cf41e01edd73bf.jpg" style="width:100%;height:100%;" ></image>
+     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/9e9e685001ed4962a757.jpg" style="width:100%;height:100%;" ></image>
      <!--  <view class="title">
         推荐计划
       </view> -->
     </view>
   </view>
+
   <view class="zan-panel" wx:if="{{type == '1'}}">
+    <view class="card"  @tap="toSubmitWork">
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
+      <!-- <view class="title">
+        当前任务
+      </view> -->
+    </view>
+  </view>
+<view class="title-item" style="margin-bottom:10px;">
+ 我的成果展示
+</view>
+<!--  个人的视频展示 -->
+  <view class="zan-row" >
+    <view class="zan-col zan-col-8">
+     <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image>
+    </view>
+     <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+      <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+
+       <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+     <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+      <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+  </view>
+
+
+
+  <!-- <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="card" @tap="toSubmitWork">
       <view class="title">
         作业提交
       </view>
     </view>
-  </view>
+  </view> -->
   <zanToptips />
 </template>
 
@@ -120,6 +191,9 @@
 //      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
     }
     data = {
+      imgUrls: ['http://lc-yub1lbct.cn-n1.lcfile.com/07438ff76865ec4e0fc8.jpg',
+      'http://lc-yub1lbct.cn-n1.lcfile.com/80c71468e956cdf79321.png',
+      'http://lc-yub1lbct.cn-n1.lcfile.com/2bddbb0fdb502a47a70a.png'],
       type: null,
       userInfo: null,
       activeColor: '#4b0',
