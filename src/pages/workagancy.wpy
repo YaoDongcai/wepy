@@ -92,9 +92,9 @@
           </view>
          
         </view>
-        <view class="zan-col zan-col-8">
+        <!-- <view class="zan-col zan-col-8">
          <view class="teacher-rank"> 第1名</view>
-        </view>
+        </view> -->
       </view>
   </view>
 </template>

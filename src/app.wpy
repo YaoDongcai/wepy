@@ -41,17 +41,12 @@ export default class extends wepy.app {
       "borderStyle": "black",
       "list":[{
         "pagePath":"pages/home",
-        "text":"成长计划",
+        "text":"初练",
         "iconPath":"images/icon_home.png",
         "selectedIconPath":"images/icon_home_active.png"
       },{
-        "pagePath":"pages/workagancy",
-        "text":"课程列表",
-        "iconPath":"images/icon_classify.png",
-        "selectedIconPath":"images/icon_classify_active.png"
-      },{
         "pagePath":"pages/me",
-        "text":"个人中心",
+        "text":"我的",
         "iconPath":"images/icon_info.png",
         "selectedIconPath":"images/icon_info_active.png"
       }]

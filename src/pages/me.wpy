@@ -33,6 +33,39 @@
       <view class="zan-cell__ft">{{userInfo.gender=='1'?'男':'女'}}</view>
     </view>
   </view>
+
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">初练成长计划</view>
+      <view class="zan-cell__ft">
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">意见反馈</view>
+      <view class="zan-cell__ft">
+         <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
+  <view class="zan-panel">
+    <view class="zan-cell">
+      <view class="zan-cell__bd" @tap="teachers()">我的教员</view>
+      <view class="zan-cell__ft">
+         <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
+  <view class="zan-panel">
+    <view class="zan-cell" >
+      <view class="zan-cell__bd">订单提交</view>
+      <view class="zan-cell__ft">
+         <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -49,7 +82,12 @@
 
     }
     methods = {
-
+      teachers() {
+        // 我的老师部分;
+         wx.navigateTo({
+           url: "/pages/workagancy"
+        })
+      }
     }
     onLoad() {
       console.log('onLoad')
