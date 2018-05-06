@@ -20,6 +20,9 @@
   .card .title {
     color:white;
   }
+  image {
+    width:100%;
+  }
 .title-item {
   font-size:14px;
   margin-top:10px;
@@ -86,9 +89,7 @@
 </swiper>
 </view>
 
-<view class="title-item">
-  初练成长计划
-</view>
+
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card">
       <view class="title">
@@ -115,10 +116,12 @@
 
   <view class="zan-panel" style="" wx:if="{{type == '1'}}">
     <view class="card" @tap="toHistoryInfo">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/3a36b14236bf39b5acdd.jpg" style="width:100%;height:100%;" ></image>
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/f0b9df31f6ea23bb1fb5.png" style="width:100%;height:100%;" ></image>
       <!-- <view class="title" >
         历史情况
       </view> -->
+      <view  style="position:absolute;left:30px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >明星教员榜</view>
+      
     </view>
   </view>
  <!--  <view class="zan-panel" wx:if="{{type == '1'}}">
@@ -127,8 +130,9 @@
     </view>
   </view> -->
   <view class="zan-panel" wx:if="{{type == '1'}}">
-    <view class="card" @tap="toRecommendPlan">
-     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/9e9e685001ed4962a757.jpg" style="width:100%;height:100%;" ></image>
+    <view class="card" @tap="toCampusCattle">
+     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/eb310a0693bfa5d823cb.png" style="width:100%;height:100%;" ></image>
+     <view style="position:absolute;left:80px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >校园牛人榜</view>
      <!--  <view class="title">
         推荐计划
       </view> -->
@@ -136,8 +140,9 @@
   </view>
 
   <view class="zan-panel" wx:if="{{type == '1'}}">
-    <view class="card"  @tap="toSubmitWork">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
+    <view class="card"  @tap="toMasterCattle">
+    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/b2506711b4ead3ecddbd.png" style="width:100%;height:100%;" ></image>
+    <view style="position:absolute;left:170px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >大师排行榜</view>
       <!-- <view class="title">
         当前任务
       </view> -->
@@ -191,9 +196,8 @@
 //      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
     }
     data = {
-      imgUrls: ['http://lc-yub1lbct.cn-n1.lcfile.com/07438ff76865ec4e0fc8.jpg',
-      'http://lc-yub1lbct.cn-n1.lcfile.com/80c71468e956cdf79321.png',
-      'http://lc-yub1lbct.cn-n1.lcfile.com/2bddbb0fdb502a47a70a.png'],
+      imgUrls: ['http://img.zhichiwangluo.com/zcimgdir/album/file_5ad8598142316.jpg',
+      'http://img.zhichiwangluo.com/zcimgdir/album/file_5ad85a61bfa0f.jpg'],
       type: null,
       userInfo: null,
       activeColor: '#4b0',
@@ -218,6 +222,18 @@
     }
 
     methods = {
+      // 去大师排行榜
+      toMasterCattle() {
+        wx.navigateTo({
+          url: "/pages/mastercattle"
+        });
+      },
+      // 去校园牛人榜
+      toCampusCattle() {
+        wx.navigateTo({
+           url: "/pages/campuscattle"
+        })
+      },
       // 获取身份提交的数据
       formSubmit(event) {
        let type = event.detail.value.formtest;

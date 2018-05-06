@@ -1,0 +1,30 @@
+<style>
+
+</style>
+
+<template>
+<zanLoadmore :nodata="_true" nodata_str="暂未开通，敬请期待"></zanLoadmore>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+   import zanLoadmore from '../components/zan-loadmore'
+  export default class CampusCattle  extends wepy.page {
+    config = {
+      navigationBarTitleText: '校园牛人榜'
+    }
+    components = {
+      zanLoadmore
+    }
+    data = {
+        _true: true,
+    }
+    methods = {
+
+    }
+    onLoad() {
+
+    }
+  }
+</script>

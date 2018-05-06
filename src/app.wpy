@@ -24,7 +24,9 @@ export default class extends wepy.app {
       "pages/teacherworkagancy",
       "pages/checkwork",
       "pages/joinworkagancy",
-      "pages/modifyteacher"
+      "pages/modifyteacher",
+      "pages/campuscattle",
+      "pages/mastercattle"
     ],
 
     window: {
