@@ -36,7 +36,7 @@
 
   <view class="zan-panel">
     <view class="zan-cell">
-      <view class="zan-cell__bd">初练成长计划</view>
+      <view class="zan-cell__bd" @tap="personalPlan()">初练成长计划</view>
       <view class="zan-cell__ft">
         <view class="zan-icon zan-icon-arrow"></view>
       </view>
@@ -82,6 +82,12 @@
 
     }
     methods = {
+      personalPlan() {
+        // 我的老师部分;
+        wx.navigateTo({
+          url: "/pages/personalPlan"
+        })
+      },
       teachers() {
         // 我的老师部分;
          wx.navigateTo({

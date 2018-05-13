@@ -20,15 +20,12 @@
   .card .title {
     color:white;
   }
-  image {
-    width:100%;
-  }
 .title-item {
   font-size:14px;
   margin-top:10px;
   margin-left:10px;
   margin-bottom:5rpx;
-  color:rgb(102, 102, 102)
+  color:rgb(102, 102, 102);
   background-color: rgb(109, 147, 225);
   line-height: 16px;
   height:16px;
@@ -89,14 +86,13 @@
 </swiper>
 </view>
 
-
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card">
       <view class="title">
         教师版
       </view>
     </view>
-  </view>
+</view>
 
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card" @tap="toworkagancy">
@@ -115,64 +111,29 @@
   </view>
 
   <view class="zan-panel" style="" wx:if="{{type == '1'}}">
-    <view class="card" @tap="toHistoryInfo">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/f0b9df31f6ea23bb1fb5.png" style="width:100%;height:100%;" ></image>
-      <!-- <view class="title" >
-        历史情况
-      </view> -->
+    <view class="card" @tap="toStartTeacher">
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/f0b9df31f6ea23bb1fb5.png" style="width:100%;height:100%;" ></image>
+
       <view  style="position:absolute;left:30px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >明星教员榜</view>
-      
+
     </view>
   </view>
- <!--  <view class="zan-panel" wx:if="{{type == '1'}}">
-    <view class="card" @tap="toCurrentTask">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
-    </view>
-  </view> -->
+
   <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="card" @tap="toCampusCattle">
-     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/eb310a0693bfa5d823cb.png" style="width:100%;height:100%;" ></image>
-     <view style="position:absolute;left:80px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >校园牛人榜</view>
-     <!--  <view class="title">
-        推荐计划
-      </view> -->
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/eb310a0693bfa5d823cb.png" style="width:100%;height:100%;" ></image>
+      <view style="position:absolute;left:80px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >校园牛人榜</view>
+
     </view>
   </view>
 
   <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="card"  @tap="toMasterCattle">
-    <image src="http://lc-yub1lbct.cn-n1.lcfile.com/b2506711b4ead3ecddbd.png" style="width:100%;height:100%;" ></image>
-    <view style="position:absolute;left:170px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >大师排行榜</view>
-      <!-- <view class="title">
-        当前任务
-      </view> -->
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/b2506711b4ead3ecddbd.png" style="width:100%;height:100%;" ></image>
+      <view style="position:absolute;left:170px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >大师排行榜</view>
     </view>
   </view>
-<view class="title-item" style="margin-bottom:10px;">
- 我的成果展示
-</view>
-<!--  个人的视频展示 -->
-  <view class="zan-row" >
-    <view class="zan-col zan-col-8">
-     <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image>
-    </view>
-     <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
-      <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
 
-       <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
-     <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
-      <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
-  </view>
-
-
-
-  <!-- <view class="zan-panel" wx:if="{{type == '1'}}">
-    <view class="card" @tap="toSubmitWork">
-      <view class="title">
-        作业提交
-      </view>
-    </view>
-  </view> -->
   <zanToptips />
 </template>
 
@@ -197,7 +158,7 @@
     }
     data = {
       imgUrls: ['http://img.zhichiwangluo.com/zcimgdir/album/file_5ad8598142316.jpg',
-      'http://img.zhichiwangluo.com/zcimgdir/album/file_5ad85a61bfa0f.jpg'],
+        'http://img.zhichiwangluo.com/zcimgdir/album/file_5ad85a61bfa0f.jpg'],
       type: null,
       userInfo: null,
       activeColor: '#4b0',
@@ -231,7 +192,13 @@
       // 去校园牛人榜
       toCampusCattle() {
         wx.navigateTo({
-           url: "/pages/campuscattle"
+          url: "/pages/campuscattle"
+        })
+      },
+      toStartTeacher() {
+        // 到明星教员列表页面
+        wx.navigateTo({
+          url: "/pages/starteacher"
         })
       },
       // 获取身份提交的数据

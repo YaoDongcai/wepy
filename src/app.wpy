@@ -25,6 +25,10 @@ export default class extends wepy.app {
       "pages/checkwork",
       "pages/joinworkagancy",
       "pages/modifyteacher",
+      "pages/personalPlan",
+      "pages/starteacher",
+      "pages/starteacherinfo",
+      "pages/appointteacher",
       "pages/campuscattle",
       "pages/mastercattle"
     ],
