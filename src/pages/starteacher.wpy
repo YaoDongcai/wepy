@@ -1,0 +1,357 @@
+<style>
+  @import '/zanui/col.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/panel.wxss';
+  .zan-panel {
+    border-radius: 15rpx;
+    margin-left: 5rpx;
+    margin-right: 5rpx;
+  }
+  .card {
+    width:100%;
+    height:200rpx;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#ff6a3c;
+  }
+  .card .title {
+    color:white;
+  }
+  .zan-col.zan-col-8 image{
+    width:100%;
+    margin-top:10rpx;
+    margin-bottom:10rpx;
+    height:200rpx;
+  }
+  .teacher-item {
+    margin-top:40rpx;
+    margin-bottom:10rpx;
+  }
+  .teacher-name {
+    height:40rpx;
+    font-size:35rpx;
+    color:rgb(120,63,4);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .teacher-score {
+    height:40rpx;
+    font-size:35rpx;
+    color:rgb(255,153,0);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .teacher-workagancy {
+    height:40rpx;
+    font-size:23rpx;
+    color:rgb(136,136,136);
+    margin-left:10rpx;
+    margin-top:10rpx;
+    text-align: left;
+  }
+  .zan-col.zan-col-8 .teacher-rank {
+    font-size:40rpx;
+    text-align: center;
+    display: flex;
+    height: 200rpx;
+    align-items: center;
+    justify-content: center;
+  }
+  image {
+    width:60px;
+    height:60px;
+    margin-top:10px;
+  }
+</style>
+
+<template>
+
+  <view style="margin: 20px 0">
+    <zanTab1 :tab.sync="tab1" componentId="tab1"></zanTab1>
+  </view>
+
+  <view style="margin:20px 0" wx:if="{{type=='guitar'}}">
+
+    <view class="zan-panel">
+      <view class="zan-row" @tap="goStarTeacherInfoByID({{item.objectId}})" style="background-color:rgb(249, 249, 249)" wx:for="{{infoList}}" wx:key="key">
+        <view class="zan-col zan-col-13">
+          <view class="zan-row">
+            <view class="zan-col zan-col-10">
+              <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5aa9547f1f289.jpg" width="40rpx;"></image>
+            </view>
+            <view class="zan-col zan-col-14">
+              <view class="teacher-item">
+                <view class="teacher-name">
+                  {{item.nickname}}
+                </view>
+                <view class="teacher-score">
+                  {{item.dipnoma}}
+                </view>
+                <view class="teacher-workagancy" style="color:rgb(255, 153, 0);">
+                  已认证-明星教员
+                </view>
+              </view>
+
+            </view>
+          </view>
+
+          <view style="font-size:28rpx;margin-left:10rpx;">
+            简介:累计学员100余名，教学方法独到,有耐心，有责任心，有感染力，讲信用
+          </view>
+        </view>
+
+        <view class="zan-col zan-col-11">
+          <canvas class="canvas" canvas-id="radarcanvas" disable-scroll="false"  />
+        </view>
+      </view>
+    </view>
+  </view>
+  <view style="margin:20px 0" wx:if="{{type=='piano'}}">
+    <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+  </view>
+  <view style="margin:20px 0" wx:if="{{type=='other'}}">
+    <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+  </view>
+</template>
+
+<script>
+  var sys = wx.getSystemInfoSync();
+  var mW = sys.windowWidth/2;
+  console.log('mW' + mW);
+
+  var mH = sys.windowHeight;
+  console.log('mH' + mH)
+
+  var mCenter = mW / 2; //中心点
+  var mRadius = mCenter - 50; //半径(减去的值用于给绘制的文本留空间)
+
+
+  var mCtx = null;
+  var mColorPolygon = '#B8B8B8'; //多边形颜色
+  var mColorLines = '#B8B8B8'; //伞骨颜色
+  var mColorText = '#000000';
+  var Interval='';
+  var lineInterval='';
+  //总执行时间
+  var totalTime = 1000;
+  //每隔多久执行一次
+  var spaceTime = 10;
+  //每执行一次完成的进度百分比
+  var speed = spaceTime / totalTime;
+  //当前完成的进度百分比
+  var precent = 0;
+  var lineprecent = 0;
+  import wepy from 'wepy'
+  import zanTab from '../components/zan-tab'
+  import zanLoadmore from '../components/zan-loadmore'
+  import AV from '../libs/av-weapp-min'
+  export default class StarTeacher  extends wepy.page {
+    config = {
+      navigationBarTitleText: '教员榜单'
+    }
+    events = {
+      zanTabChange(selectedId, event) {
+        var self = this;
+        let {componentId} = event.source
+        this[componentId].selectedId = selectedId
+        // 当前tab切换的时候
+        self.type=selectedId;
+        this.$apply()
+      }
+    }
+    components = {
+      zanTab1: zanTab,
+      zanLoadmore
+    }
+    data = {
+      type:'guitar',
+      _true:true,
+      tab1: {
+        list:[
+          {
+            id:'guitar',
+            title:'吉他'
+          },{
+            id:'piano',
+            title:'钢琴'
+          },{
+            id:'other',
+            title:'其他'
+          }
+        ],
+        selectedId: 'guitar',
+        scroll: false
+      },
+      infoList:null,
+    }
+    methods = {
+      //获取当前的用户明星教员详情页面
+      goStarTeacherInfoByID(objectID) {
+        //
+        var url = "/pages/starteacherinfo?id=" + objectID
+        wx.navigateTo({
+          url: url,
+        })
+      },
+    }
+    // 绘制多边伞架
+    drawPolygon (ctx, mData) {
+
+      let mCount = mData.length;
+      let mAngle = Math.PI * 2 / mCount; //角度
+      ctx.save();
+      ctx.setStrokeStyle(mColorPolygon);
+      var r = mRadius / mCount; //单位半径
+      //画8个圈
+      for (var i = 0; i < mCount; i++) {
+        ctx.beginPath();
+        var currR = r * (i + 1); //当前半径
+        //画8条边
+        for (var j = 0; j < mCount; j++) {
+          var x = mCenter + currR * Math.cos(mAngle * j);
+          var y = mCenter + currR * Math.sin(mAngle * j);
+
+          ctx.lineTo(x, y);
+        }
+        ctx.closePath()
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    //绘制伞骨
+    drawLines(ctx, mData){
+      let mCount = mData.length;
+      let mAngle = Math.PI * 2 / mCount; //角度
+      ctx.save();
+      ctx.beginPath();
+      ctx.setStrokeStyle(mColorLines);
+
+      for (var i = 0; i < mCount; i++) {
+        var x = mCenter + mRadius * Math.cos(mAngle * i) * lineprecent;
+        var y = mCenter + mRadius * Math.sin(mAngle * i) * lineprecent;
+        ctx.moveTo(mCenter, mCenter);
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+      ctx.draw(0, 0, 500, 500);
+      var oldPrectet = lineprecent;
+      lineprecent = lineprecent + speed;
+      if (oldPrectet < 1 && lineprecent > 1) {
+        lineprecent = 1;
+      }
+    }
+    //绘制顶点文本
+    drawText(ctx, mData){
+      ctx.save();
+      let mCount = mData.length;
+      let mAngle = Math.PI * 2 / mCount; //角度
+      var fontSize = mCenter / 13;
+      ctx.font = fontSize + 'px Microsoft Yahei';
+      ctx.setFillStyle(mColorText);
+      for (var i = 0; i < mCount; i++) {
+        var x = mCenter + mRadius * Math.cos(mAngle * i);
+        var y = mCenter + mRadius * Math.sin(mAngle * i);
+
+        //通过不同的位置，调整文本的显示位置
+        if (mAngle * i >= 0 && mAngle * i <Math.PI / 2) {
+          ctx.fillText(mData[i][0], x+10, y + fontSize-10);
+        } else if (mAngle * i == Math.PI / 2) {
+          ctx.fillText(mData[i][0], x-10, y + fontSize);
+        }else if (mAngle * i > Math.PI / 2 && mAngle * i <= Math.PI) {
+          ctx.fillText(mData[i][0], x-30 , y + fontSize-15);
+        } else if (mAngle * i > Math.PI && mAngle * i <= Math.PI * 3 / 2) {
+          ctx.fillText(mData[i][0], x - 20, y-10);
+        } else {
+          ctx.fillText(mData[i][0], x, y-8);
+        }
+
+      }
+
+      ctx.restore();
+    }
+    //绘制数据区域
+    drawRegion(ctx, mData){
+      ctx.save();
+      let mCount = mData.length;
+      let mAngle = Math.PI * 2 / mCount; //角度
+      ctx.beginPath();
+      for (var i = 0; i < mCount; i++) {
+        var x = mCenter + mRadius * Math.cos(mAngle * i) * mData[i][1] / 100 * precent;
+        var y = mCenter + mRadius * Math.sin(mAngle * i) * mData[i][1] / 100 * precent;
+        ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.save();
+      ctx.setFillStyle("rgba(240,230,140,0.8)");
+      ctx.fill();
+      ctx.draw(0, 0, 400, 400);
+      var oldPrectet = precent;
+      precent = precent + speed;
+      if (oldPrectet < 1 && precent > 1) {
+        precent = 1;
+      }
+    }
+    //每个数据与线的焦点
+    drawCircle(ctx, mData){
+      ctx.save();
+      let mCount = mData.length;
+      let mAngle = Math.PI * 2 / mCount; //角度
+      var r = mCenter / 18;
+      var r = mCenter / 50;
+      for (var i = 0; i < mCount; i++) {
+        var x = mCenter + mRadius * Math.cos(mAngle * i) * mData[i][1] / 100;
+        var y = mCenter + mRadius * Math.sin(mAngle * i) * mData[i][1] / 100;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.setFillStyle("rgba(240,230,140,0.8)");
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+    onLoad() {
+      // 获取所有的明星教师教师
+      var teachersQuery = new AV.Query('Teachers');
+      wx.showLoading({
+        title: '加载中',
+      });
+      var self = this;
+      // 表示为明星教员
+      teachersQuery.equalTo('teacherType', '0');
+      teachersQuery.find().then(res=> {
+        wx.hideLoading() ;
+        console.log(res)
+
+        self.infoList = res;
+        // 开始绘制当前的教师信息
+        const ctx = wx.createCanvasContext('radarcanvas');
+        var mData = [['经验', 30], ['方法', 50], ['点评', 70], ['信誉', 50], ['专业', 80], ['沟通', 50]];
+        this.drawPolygon(ctx, mData);//画伞架
+        this.drawText(ctx, mData);//画文字
+        this.drawCircle(ctx, mData);//画区域块焦点
+        self.drawRegion(ctx, mData);//画数据区域块
+        setTimeout(function () {
+          self.Interval = setInterval(function () {
+            if (precent <= 1) {
+              self.drawRegion(ctx, mData);//画数据区域块
+            } else {
+              clearInterval(self.Interval);
+            }
+          }, spaceTime);
+        }, 1000);
+
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.infoList =[];
+      });
+
+    }
+  }
+</script>

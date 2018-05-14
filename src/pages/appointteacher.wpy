@@ -1,0 +1,151 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/btn.wxss';
+  .field__title--radius {
+    padding-bottom: 10px;
+  }
+</style>
+
+<template>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="zan-panel">
+      <zanField1 :options="form_name" componentId="zanField1"></zanField1>
+      <zanField2 :options="form_tel" componentId="zanField2"></zanField2>
+      <view class="zan-cell">
+        <view>已选教员:{{teacher.nickname}}</view>
+      </view>
+      <view class="zan-cell">
+        <textarea placeholder="请简述你的需求如：吉他零基础，家住宝山区大场镇，周末安排" name="des"/>
+      </view>
+      <view class="zan-btns">
+        <button
+          class="zan-btn zan-btn--primary"
+          formType="submit">立即预约</button>
+        <button
+          class="zan-btn"
+          formType="reset">重置数据</button>
+      </view>
+
+    </view>
+  </form>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import zanField from '../components/zan-field'
+  import AV from '../libs/av-weapp-min'
+//  预约教师提交页面
+  export default class AppointTeacher  extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约老师'
+    }
+    data = {
+      text:'initText',
+      teacher:null,
+      objectId:null,
+      form_name: {
+        name: 'name',
+        placeholder: '你的姓名',
+        componentId: 'form:test:name'
+      },
+      form_tel: {
+        name: 'phone',
+        inputType: 'tel',
+        placeholder: '你的手机号码',
+        componentId: 'form:test:tel'
+      },
+    }
+    components = {
+      zanField1: zanField,
+      zanField2: zanField,
+    }
+    methods = {
+      formSubmit(event) {
+        //需要当前去判断一下 如果当前的数据不行 有问题;
+        var self = this;
+        var id = self.objectId;
+
+        var ob = event.detail.value;// 需要提交的数据
+
+
+        const AppointTeacherClass = AV.Object.extend('AppointTeacher');
+        const AppointTeacher = new AppointTeacherClass();
+
+        AppointTeacher.set('name',ob.name);// 设置姓名
+        AppointTeacher.set('phone',ob.phone)// 设置电话
+        AppointTeacher.set('des', ob.des)// 设置提交的需求描述
+        AppointTeacher.set('status','0');// 设置姓名
+        // 当前的teacher 信息;
+
+        var teacher = AV.Object.createWithoutData('Teachers',id);
+        AppointTeacher.set('teacherId', teacher);
+        AppointTeacher.save().then(success=> {
+          wx.hideLoading() ;
+          wx.showToast({
+            title: '提交成功',
+            icon: 'success',
+            duration: 2000
+          });
+
+          // 回到首页
+          wx.navigateBack({
+            delta: 1
+          })
+        }, error => {
+          wx.showToast({
+            title: '提交失败',
+            icon: 'success',
+            duration: 2000
+          })
+          console.log(error.message)
+        })
+      },
+
+      formReset(event) {
+        console.log('[zan:field:reset]', event)
+      }
+    }
+    events = {
+      zanFieldChange(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:change]', componentId, detail)
+      },
+
+      zanFieldFocus(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:focus]', componentId, detail)
+      },
+
+      zanFieldBlur(e) {
+        const { componentId, detail } = e
+
+        console.log('[zan:field:blur]', componentId, detail)
+      }
+    }
+    onLoad(options) {
+      var id = options.id;
+      var self = this;
+      this.objectId = id;
+      console.log('optionsid' + id);
+      // 获取这位老师的信息;
+      var query = new AV.Query('Teachers');
+      wx.showLoading({
+        title: '加载中',
+      });
+
+      query.get(id).then(function (res) {
+        // 成功获得实例
+        self.teacher = res;
+        console.log(res)
+        wx.hideLoading();
+        self.$apply();
+      }, function (error) {
+        // 异常处理
+        wx.hideLoading();
+        console.log(error)
+      });
+    }
+  }
+</script>

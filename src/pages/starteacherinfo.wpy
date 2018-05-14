@@ -1,0 +1,136 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/icon.wxss';
+</style>
+
+<template>
+  <!-- 用户提交预约教师 -->
+  <view class="zan-panel">
+    <view class="zan-cell" >
+      <view class="zan-cell__bd">{{location}}</view>
+      <view class="zan-cell__ft" @tap="toAppointTeacher">立即预约</view>
+    </view>
+  </view>
+  <view style="margin: 20px 0">
+    <zanTab1 :tab.sync="tab1" componentId="tab1"></zanTab1>
+  </view>
+
+  <view style="margin:20px 0" wx:if="{{type=='show'}}">
+    <!-- 如果是当前进入的数据 表示为icon-->
+    <view class="zan-panel">
+      <view class="zan-cell">
+        <video src="http://mvvideoshare2.meitudata.com/5a03165f63def1577_H264_3.mp4?k=df110e610845359ab6fdc805d43a13bc&t=5ae815a6"   controls ></video>
+      </view>
+      <view class="zan-cell">
+        <video src="http://mvvideoshare1.meitudata.com/5a54cd975c6e94317.mp4?k=c71e7a7e7f4f7270bb3f1680ec4f75b6&t=5ae81580"   controls ></video>
+      </view>
+    </view>
+  </view>
+  <view style="margin:20px 0" wx:if="{{type=='student'}}">
+    <!-- 如果是当前进入的数据 表示为icon-->
+    <view class="zan-panel">
+      <view class="zan-cell">
+        <video src="http://mvvideo10.meitudata.com/5ac8b094a1ef09386_H264_13.mp4http://mvvideo10.meitudata.com/5ac8b094a1ef09386_H264_13.mp4"   controls ></video>
+      </view>
+      <view class="zan-cell">
+        <video src="http://mvvideo11.meitudata.com/5a76935ab30d47153_H264_3.mp4"   controls ></video>
+      </view>
+      <view class="zan-cell">
+        <video src="http://mvvideo2.meitudata.com/5a6076a1c95ab5140.mp4"   controls ></video>
+      </view>
+    </view>
+  </view>
+  <view style="margin:20px 0" wx:if="{{type=='course'}}">
+    <!-- 如果是当前进入的数据 表示为icon-->
+    <zanLoadmore :nodata="_true" nodata_str="暂未开放"></zanLoadmore>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  import zanLoadmore from '../components/zan-loadmore'
+  import zanTab from '../components/zan-tab'
+//   教师先去界面;
+
+  export default class StarTeacherInfo  extends wepy.page {
+    config = {
+      navigationBarTitleText: '教员详情'
+    }
+    components = {
+      zanTab1: zanTab,
+      zanLoadmore
+    }
+    data = {
+      _true:true,
+      location:'定位失败',
+      objectId:null,
+      type: 'show',
+      tab1: {
+        list:[
+          {
+            id:'show',
+            title:'展示'
+          },{
+            id:'student',
+            title:'学员'
+          },{
+            id:'course',
+            title:'课程'
+          }
+        ],
+        selectedId: 'show',
+        scroll: false
+      }
+    }
+    events = {
+      zanTabChange(selectedId, event) {
+        var self = this;
+        let {componentId} = event.source
+        this[componentId].selectedId = selectedId
+        // 当前tab切换的时候
+        self.type=selectedId;
+
+        this.$apply()
+      }
+    }
+    methods = {
+
+      // 点击展示其他的页面 tab
+      toAppointTeacher() {
+        // 打印出这个id
+        console.log('id' + this.objectId);
+        var url = "/pages/appointteacher?id=" + this.objectId;
+        wx.navigateTo({
+          url: url,
+        })
+      }
+    }
+    onLoad(options) {
+      // 获取当前传来的参数
+      var self = this;
+      var id = options.id;
+      // 当前这位教师的id
+      //需要展示当前这位老师的一些个人风采消息;
+      self.objectId = id;
+      // 开始获取当前的地理位置 ak=67d28f499072d22dba8a978e2431794f;
+      wx.chooseLocation({
+        success: function (res) {
+          // success
+          console.log(res.name)
+          self.location = res.name;
+          self.$apply();
+        },
+        fail: function () {
+          // 定位失败;
+
+        },
+        complete: function () {
+          // complete
+        }
+      })
+
+    }
+  }
+</script>

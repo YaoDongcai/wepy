@@ -1,0 +1,192 @@
+<style lang="css">
+  @import '/zanui/col.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/panel.wxss';
+  @import '/zanui/btn.wxss';
+  .zan-panel {
+    border-radius: 15rpx;
+    margin-left: 5rpx;
+    margin-bottom:-3rpx;
+    margin-right: 5rpx;
+  }
+  .card {
+    width:100%;
+    height:200rpx;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#ff6a3c;
+  }
+  .card .title {
+    color:white;
+  }
+  .title-item {
+    font-size:14px;
+    margin-top:10px;
+    margin-left:10px;
+    margin-bottom:5rpx;
+    color:rgb(102, 102, 102);
+    background-color: rgb(109, 147, 225);
+    line-height: 16px;
+    height:16px;
+  }
+
+  .zan-col image {
+    width:100px;
+    height:90px;
+    border-radius: 0;
+  }
+
+  .album-title{
+    position: absolute;
+    left: 0;
+    bottom:0;
+    width: 100%;
+    line-height: 1.6em;
+    background-color: rgba(0,0,0,.5);
+    text-decoration: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+</style>
+<template>
+
+  <view class="title-item">
+    初练成长计划
+  </view>
+
+  <view class="zan-panel" style="">
+    <view class="card" @tap="toHistoryInfo">
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/3a36b14236bf39b5acdd.jpg" style="width:100%;height:100%;" ></image>
+      <!-- <view class="title" >
+        历史情况
+      </view> -->
+    </view>
+  </view>
+  <!--  <view class="zan-panel" wx:if="{{type == '1'}}">
+     <view class="card" @tap="toCurrentTask">
+     <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
+     </view>
+   </view> -->
+  <view class="zan-panel">
+    <view class="card" @tap="toRecommendPlan">
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/9e9e685001ed4962a757.jpg" style="width:100%;height:100%;" ></image>
+    </view>
+  </view>
+
+  <view class="zan-panel">
+    <view class="card"  @tap="toSubmitWork">
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
+
+    </view>
+  </view>
+  <view class="title-item">
+    我的成果展示
+  </view>
+  <!--  个人的视频展示 -->
+  <view class="zan-row" >
+    <view class="zan-col zan-col-8">
+      <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image>
+    </view>
+    <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+    <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+
+    <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+    <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+    <view class="zan-col zan-col-8"><image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5acdb5a6cb035.jpg" ></image></view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min';
+  export default class personalPlan extends wepy.page {
+    config = {
+      navigationBarTitleText: '初练计划'
+    };
+
+
+    data = {
+      imgUrls: ['http://lc-yub1lbct.cn-n1.lcfile.com/07438ff76865ec4e0fc8.jpg',
+        'http://lc-yub1lbct.cn-n1.lcfile.com/80c71468e956cdf79321.png',
+        'http://lc-yub1lbct.cn-n1.lcfile.com/2bddbb0fdb502a47a70a.png'],
+      type: null,
+      userInfo: null,
+      activeColor: '#4b0',
+      items: [
+        {
+          padding: 0,
+          value: '0',
+          name: '教员'
+        },
+        {
+          padding: 0,
+          value: '1',
+          name: '学员'
+        }
+      ],
+      checked_form: -1,
+    }
+
+
+    computed = {
+
+    }
+
+    methods = {
+      toworkagancy()  {
+        wx.navigateTo({
+          url: "/pages/teacherworkagancy"
+        })
+      },
+      // 加入琴行
+      joinworkagancy() {
+        wx.navigateTo({
+          url: "/pages/joinworkagancy"
+        })
+      },
+      // 教师版本的提交的作业;
+      teachersForWork() {
+        wx.navigateTo({
+          url: "/pages/workhistory"
+        })
+      },
+      // 历史情况页面
+      toHistoryInfo() {
+        wx.navigateTo({
+          url: "/pages/history"
+        })
+      },
+      //当前任务页面
+      toCurrentTask() {
+        wx.navigateTo({
+          url: "/pages/current"
+        })
+      },
+      // 推荐计划页面
+      toRecommendPlan() {
+        wx.navigateTo({
+          url: "/pages/recommend"
+        })
+      },
+      toSubmitWork() {
+        wx.navigateTo({
+          url: "/pages/work"
+        })
+      }
+    }
+
+
+    onShow() {
+
+    }
+
+
+    onLoad() {
+
+    }
+  }
+</script>
