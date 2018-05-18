@@ -2,6 +2,9 @@
   @import '/zanui/panel.wxss';
   @import '/zanui/cell.wxss';
   @import '/zanui/icon.wxss';
+  video {
+    width:100%;
+  }
 </style>
 
 <template>

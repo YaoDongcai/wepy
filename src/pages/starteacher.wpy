@@ -38,7 +38,7 @@
   }
   .teacher-score {
     height:40rpx;
-    font-size:35rpx;
+    font-size:25rpx;
     color:rgb(255,153,0);
     margin-left:10rpx;
     margin-top:10rpx;
@@ -98,7 +98,7 @@
             </view>
           </view>
 
-          <view style="font-size:28rpx;margin-left:10rpx;">
+          <view style="font-size:25rpx;margin-left:10rpx;">
             简介:累计学员100余名，教学方法独到,有耐心，有责任心，有感染力，讲信用
           </view>
         </view>
@@ -109,9 +109,11 @@
       </view>
     </view>
   </view>
+
   <view style="margin:20px 0" wx:if="{{type=='piano'}}">
     <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
   </view>
+
   <view style="margin:20px 0" wx:if="{{type=='other'}}">
     <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
   </view>
@@ -183,7 +185,7 @@
           }
         ],
         selectedId: 'guitar',
-        scroll: false
+        scroll: true
       },
       infoList:null,
     }
