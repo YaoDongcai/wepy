@@ -49,7 +49,9 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
+  .zan-panel {
+    border-radius: 0px;
+  }
 </style>
 <template>
   <view class="zan-panel">
@@ -65,8 +67,8 @@
   <view class="zan-panel" style="margin-top:0;">
     <view class="card" @tap="toHistoryInfo">
       <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>
-      <view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >历史情况</view>
-      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >查看过往记录</view>
+      <view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >练琴记录</view>
+      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >记录点滴成长</view>
     </view>
   </view>
   <!--  <view class="zan-panel" wx:if="{{type == '1'}}">
@@ -74,38 +76,42 @@
      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/4c7244110204226bba74.jpg" style="width:100%;height:100%;" ></image>
      </view>
    </view> -->
-  <view class="zan-panel">
-    <view class="card" @tap="toRecommendPlan">
-      <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>
-      <view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >练琴记录</view>
-      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >记录点滴成长</view>
-    </view>
-  </view>
+  <!--<view class="zan-panel">-->
+    <!--<view class="card" @tap="toRecommendPlan">-->
+      <!--<image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>-->
+      <!--<view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >练琴记录</view>-->
+      <!--<view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >记录点滴成长</view>-->
+    <!--</view>-->
+  <!--</view>-->
 
   <view class="zan-panel">
     <view class="card"  @tap="toSubmitWork">
       <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>
       <view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >作业提交</view>
-      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >私人订制方案</view>
+      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >认真完成作业</view>
     </view>
   </view>
 
-  <!--<view class="zan-panel">-->
-    <!--<view class="card"  >-->
-      <!--<image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>-->
-      <!--<view style="position:absolute;left:170px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >智能计划</view>-->
-    <!--</view>-->
-  <!--</view>-->
+  <view class="zan-panel">
+    <view class="card"  @tap="toRecommendPlan">
+      <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5af5251d6a312.jpg" style="width:100%;height:100%;" ></image>
+      <view style="position:absolute;left:20px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >智能计划</view>
+      <view style="position:absolute;left:50%;font-size:35rpx;line-height:50rpx;color:rgb(68,68,68);" >私人订制方案</view>
+    </view>
+  </view>
 
   <view class="title-item">
     我的成果展示
   </view>
   <!--  个人的视频展示 -->
   <view class="zan-row" >
-    <view class="zan-col zan-col-12">
+    <view class="zan-col zan-col-8">
       <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235976085ad04128df043.jpg" ></image>
     </view>
-    <view class="zan-col zan-col-12">
+    <view class="zan-col zan-col-8">
+      <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>
+    </view>
+    <view class="zan-col zan-col-8">
       <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>
     </view>
   </view>

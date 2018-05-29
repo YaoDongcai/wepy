@@ -54,6 +54,9 @@ image {
   width:100%;
   height:100%;
 }
+  .zan-panel {
+    border-radius: 0px;
+  }
 </style>
 <template>
 

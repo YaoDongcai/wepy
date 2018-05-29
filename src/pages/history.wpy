@@ -100,7 +100,8 @@
         title: '加载中',
       });
       historyInfoList.equalTo('username',userInfo.username);
-      historyInfoList.include(['teacher'])
+      historyInfoList.include(['teacher']);
+      historyInfoList.descending('createdAt');
       historyInfoList.find().then(res=> {
         wx.hideLoading() ;
 

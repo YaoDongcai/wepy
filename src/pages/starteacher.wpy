@@ -2,14 +2,19 @@
   @import '/zanui/col.wxss';
   @import '/zanui/row.wxss';
   @import '/zanui/panel.wxss';
+  .zan-tab {
+    text-align: center;
+  }
   .zan-panel {
+    margin-top:10px;
+    height:260rpx;
     border-radius: 15rpx;
     margin-left: 5rpx;
     margin-right: 5rpx;
   }
   .card {
     width:100%;
-    height:200rpx;
+    height:180rpx;
     display:flex;
     justify-content: center;
     align-items: center;
@@ -30,26 +35,26 @@
   }
   .teacher-name {
     height:40rpx;
-    font-size:35rpx;
+    font-size:16px;
     color:rgb(120,63,4);
     margin-left:10rpx;
-    margin-top:10rpx;
+    margin-top:5rpx;
     text-align: left;
   }
   .teacher-score {
     height:40rpx;
-    font-size:25rpx;
-    color:rgb(255,153,0);
+    font-size:12px;
+    color:#6FA8DC;
     margin-left:10rpx;
-    margin-top:10rpx;
+    margin-top:20rpx;
     text-align: left;
   }
   .teacher-workagancy {
-    height:40rpx;
-    font-size:23rpx;
+    height:30rpx;
+    font-size:10px;
     color:rgb(136,136,136);
     margin-left:10rpx;
-    margin-top:10rpx;
+    margin-top:0rpx;
     text-align: left;
   }
   .zan-col.zan-col-8 .teacher-rank {
@@ -61,9 +66,12 @@
     justify-content: center;
   }
   image {
-    width:60px;
-    height:60px;
+    width:100%;
+    height:150rpx;
     margin-top:10px;
+  }
+  .zan-panel {
+    border-radius:0px;
   }
 </style>
 
@@ -76,7 +84,7 @@
   <view style="margin:20px 0" wx:if="{{type=='guitar'}}">
 
     <view class="zan-panel">
-      <view class="zan-row" @tap="goStarTeacherInfoByID({{item.objectId}})" style="background-color:rgb(249, 249, 249)" wx:for="{{infoList}}" wx:key="key">
+      <view class="zan-row" @tap="goStarTeacherInfoByID({{item.objectId}})" style="margin-top:5px;background-color:rgb(249, 249, 249);height:260rpx;" wx:for="{{infoList}}" wx:key="key">
         <view class="zan-col zan-col-13">
           <view class="zan-row">
             <view class="zan-col zan-col-10">
@@ -98,7 +106,7 @@
             </view>
           </view>
 
-          <view style="font-size:25rpx;margin-left:10rpx;">
+          <view style="font-size:9px;margin-left:10rpx;color:#888888;">
             简介:累计学员100余名，教学方法独到,有耐心，有责任心，有感染力，讲信用
           </view>
         </view>
@@ -110,12 +118,25 @@
     </view>
   </view>
 
-  <view style="margin:20px 0" wx:if="{{type=='piano'}}">
-    <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+  <view style="margin: 20px 0" wx:if="{{type=='piano'}}">
+      <view class="zan-panel">
+        <view class="zan-row" >
+
+          <view style="display:flex;justify-content: center;align-items: center;color:#999999;font-size:14px;margin-top:20px;">暂无数据</view>
+        </view>
+
+      </view>
+
   </view>
 
   <view style="margin:20px 0" wx:if="{{type=='other'}}">
-    <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>
+    <view class="zan-panel">
+      <view class="zan-row" >
+
+        <view style="display:flex;justify-content: center;align-items: center;color:#999999;font-size:14px;margin-top:20px;">暂无数据</view>
+      </view>
+
+    </view>
   </view>
 </template>
 
