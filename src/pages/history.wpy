@@ -43,12 +43,7 @@
         <view class="zan-cell__ft">{{item.description || '暂无评价'}}</view>
 
       </view>
-      <view class="zan-cell" style="justify-content: center;">
-        <view class="zan-btn zan-btn--primary">
-       删除
-      </view>
 
-      </view>
     </view>
   </div>
 <zanLoadmore :nodata="_true" nodata_str="暂无数据"></zanLoadmore>

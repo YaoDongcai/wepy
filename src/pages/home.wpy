@@ -85,9 +85,9 @@ image {
 <view wx:if="{{type != ''}}">
   <swiper indicator-dots='true'
   autoplay='true'>
-  <block wx:for="{{imgUrls}}" wx:key="key">
+  <block wx:for="{{banner}}" wx:key="key">
     <swiper-item style="width:100%;height:200rpx;">
-      <image src="{{item}}" />
+      <image src="{{item}}" mode="aspectFill" />
     </swiper-item>
   </block>
 </swiper>
@@ -164,8 +164,8 @@ image {
 //      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
     }
     data = {
-      imgUrls: ['http://img.zhichiwangluo.com/zcimgdir/album/file_5ad8598142316.jpg',
-        'http://img.zhichiwangluo.com/zcimgdir/album/file_5ad85a61bfa0f.jpg'],
+      banner:[],// banner的图片
+
       type: null,
       userInfo: null,
       activeColor: '#4b0',
@@ -188,7 +188,20 @@ image {
     computed = {
 
     }
-
+    loadBanner() {
+      // 开始请求图片
+      var that = this;
+      that.banner = [];
+      var query = new AV.Query('Banner');
+      // query.include('image');
+      query.find().then(function (bannerObjects) {
+        var banner = [];
+        for (var i = 0; i < bannerObjects.length; i++) {
+          that.banner.push((bannerObjects[i].get("url")));
+        }
+        that.$apply();
+      });
+    }
     methods = {
       // 去大师排行榜
       toMasterCattle() {
@@ -280,16 +293,29 @@ image {
     }
 
     onShow() {
-
+      var that = this;
+      // 获取banner的图片;
+      that.loadBanner();
+      // 获得当前登录用户
+      const user = AV.User.current();
+      // 调用小程序 API，得到用户信息
+      wx.getUserInfo({
+        success: ({userInfo}) => {
+          // 更新当前用户的信息，昵称头像等
+          console.log(userInfo)
+          user.set(userInfo).save().then(user => {
+            // 成功，此时可在控制台中看到更新后的用户信息
+            console.log(user)
+            that.userInfo = userInfo
+            that.$apply();
+          }).catch(console.error);
+        }
+      });
     }
 
 
     onLoad() {
-    var self = this;
-    AV.init({
-      appId: 'yUB1LBCTwiuuKyfKw3llTtE9-gzGzoHsz',
-      appKey: 'WCpB4WnDow9x5coqBjad4lXY',
-    });
+      const self = this;
     // 表示开始用这个用户去登录;
     AV.User.loginWithWeapp().then(user => {
       self.$parent.globalData.username = user.toJSON();

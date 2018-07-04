@@ -19,29 +19,21 @@
     <zanTab1 :tab.sync="tab1" componentId="tab1"></zanTab1>
   </view>
 
-  <view style="margin:20px 0" wx:if="{{type=='show'}}">
+  <view style="margin:20px 0" wx:if="{{type=='show'}}" wx:key="key">
     <!-- 如果是当前进入的数据 表示为icon-->
     <view class="zan-panel">
-      <view class="zan-cell">
-        <video src="http://mvvideoshare2.meitudata.com/5a03165f63def1577_H264_3.mp4?k=df110e610845359ab6fdc805d43a13bc&t=5ae815a6"   controls ></video>
-      </view>
-      <view class="zan-cell">
-        <video src="http://mvvideoshare1.meitudata.com/5a54cd975c6e94317.mp4?k=c71e7a7e7f4f7270bb3f1680ec4f75b6&t=5ae81580"   controls ></video>
+      <view class="zan-cell" wx:for="{{teacher.show}}">
+        <video src="{{item}}" controls></video>
       </view>
     </view>
   </view>
   <view style="margin:20px 0" wx:if="{{type=='student'}}">
     <!-- 如果是当前进入的数据 表示为icon-->
     <view class="zan-panel">
-      <view class="zan-cell">
-        <video src="http://mvvideo10.meitudata.com/5ac8b094a1ef09386_H264_13.mp4http://mvvideo10.meitudata.com/5ac8b094a1ef09386_H264_13.mp4"   controls ></video>
+      <view class="zan-cell" wx:for="{{teacher.studentVideo}}" wx:key="key">
+        <video src="{{item}}" controls></video>
       </view>
-      <view class="zan-cell">
-        <video src="http://mvvideo11.meitudata.com/5a76935ab30d47153_H264_3.mp4"   controls ></video>
-      </view>
-      <view class="zan-cell">
-        <video src="http://mvvideo2.meitudata.com/5a6076a1c95ab5140.mp4"   controls ></video>
-      </view>
+
     </view>
   </view>
   <view style="margin:20px 0" wx:if="{{type=='course'}}">
@@ -66,6 +58,7 @@
       zanLoadmore
     }
     data = {
+      teacher:null,
       _true:true,
       location:'定位失败',
       objectId:null,
@@ -117,6 +110,16 @@
       // 当前这位教师的id
       //需要展示当前这位老师的一些个人风采消息;
       self.objectId = id;
+
+      // 获取当前的老师的详细信息;
+      var queryTeachers = new AV.Query('Teachers');
+      queryTeachers.get(id).then(function (res) {
+        // 成功获得实例
+        self.teacher = res;
+        self.$apply();
+      }, function (error) {
+        // 异常处理
+      });
       // 开始获取当前的地理位置 ak=67d28f499072d22dba8a978e2431794f;
       wx.chooseLocation({
         success: function (res) {

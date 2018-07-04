@@ -7,7 +7,13 @@
 import wepy from 'wepy'
 import 'wepy-async-function'
 import AV from './libs/av-weapp-min';
+const appId = "yUB1LBCTwiuuKyfKw3llTtE9-gzGzoHsz";
+const appKey = "WCpB4WnDow9x5coqBjad4lXY";
 
+AV.init({
+  appId: appId,
+  appKey: appKey,
+});
 export default class extends wepy.app {
   config = {
     pages: [

@@ -7,7 +7,7 @@
   }
   .zan-panel {
     margin-top:10px;
-    height:260rpx;
+    height:auto;
     border-radius: 15rpx;
     margin-left: 5rpx;
     margin-right: 5rpx;
@@ -81,14 +81,14 @@
     <zanTab1 :tab.sync="tab1" componentId="tab1"></zanTab1>
   </view>
 
-  <view style="margin:20px 0" wx:if="{{type=='guitar'}}">
+  <view style="margin:20px 0">
 
     <view class="zan-panel">
-      <view class="zan-row" @tap="goStarTeacherInfoByID({{item.objectId}})" style="margin-top:5px;background-color:rgb(249, 249, 249);height:260rpx;" wx:for="{{infoList}}" wx:key="key">
+      <view class="zan-row" @tap="goStarTeacherInfoByID({{item.objectId}})" style="margin-top:5px;background-color:rgb(249, 249, 249);height:260rpx;" wx:for-index="idx" wx:for="{{infoList}}" wx:key="key">
         <view class="zan-col zan-col-13">
           <view class="zan-row">
             <view class="zan-col zan-col-10">
-              <image src="http://img.zhichiwangluo.com/zcimgdir/album/file_5aa9547f1f289.jpg" width="40rpx;"></image>
+              <image src="{{item.img_url}}" width="40rpx;"></image>
             </view>
             <view class="zan-col zan-col-14">
               <view class="teacher-item">
@@ -107,37 +107,18 @@
           </view>
 
           <view style="font-size:9px;margin-left:10rpx;color:#888888;">
-            简介:累计学员100余名，教学方法独到,有耐心，有责任心，有感染力，讲信用
+            {{item.extendsInfo}}
           </view>
         </view>
 
         <view class="zan-col zan-col-11">
-          <canvas class="canvas" canvas-id="radarcanvas" disable-scroll="false"  />
+          <!--<image src="{{item.lz_img}}" width="100%;"></image>-->
+          <canvas class="canvas" canvas-id="radarcanvas{{idx}}" disable-scroll="false"  />
         </view>
       </view>
     </view>
   </view>
 
-  <view style="margin: 20px 0" wx:if="{{type=='piano'}}">
-      <view class="zan-panel">
-        <view class="zan-row" >
-
-          <view style="display:flex;justify-content: center;align-items: center;color:#999999;font-size:14px;margin-top:20px;">暂无数据</view>
-        </view>
-
-      </view>
-
-  </view>
-
-  <view style="margin:20px 0" wx:if="{{type=='other'}}">
-    <view class="zan-panel">
-      <view class="zan-row" >
-
-        <view style="display:flex;justify-content: center;align-items: center;color:#999999;font-size:14px;margin-top:20px;">暂无数据</view>
-      </view>
-
-    </view>
-  </view>
 </template>
 
 <script>
@@ -178,10 +159,23 @@
     events = {
       zanTabChange(selectedId, event) {
         var self = this;
+        var objectId = null;
         let {componentId} = event.source
         this[componentId].selectedId = selectedId
         // 当前tab切换的时候
         self.type=selectedId;
+        // 在这里需要配置对应的数据;
+        switch(selectedId) {
+          case 'piano':
+            objectId = '5b2b686167f356003437ffbe';
+            break;
+          case 'guitar':
+            objectId = '5b2b683cac502e0031b06356';
+            break;
+          default:
+            objectId = '5b2b686d2f301e003534d54f';
+        }
+        this.loadTeachersList(objectId);
         this.$apply()
       }
     }
@@ -298,6 +292,47 @@
 
       ctx.restore();
     }
+    loadTeachersList(objectId) {
+      // 获取所有的明星教师教师
+      var teachersQuery = new AV.Query('Teachers');
+      var category = AV.Object.createWithoutData('Category',objectId); // 首次进来加载吉他的数据
+      teachersQuery.equalTo('Category', category);
+      teachersQuery.equalTo('teacherType', '0');
+      wx.showLoading({
+        title: '加载中',
+      });
+      var self = this;
+      // 表示为明星教员
+
+      teachersQuery.find().then(res=> {
+        wx.hideLoading() ;
+        console.log(res)
+
+        self.infoList = res;
+        // 开始绘制当前的教师信息
+        for(var index=0;index<self.infoList.length;index++) {
+          const ctx = wx.createCanvasContext('radarcanvas'+index);
+          var mData = [['经验', 30 + index*2], ['方法', 50+ index*1], ['点评', 70 +index*1], ['信誉', 50], ['专业', 80], ['沟通', 50]];
+          this.drawPolygon(ctx, mData);//画伞架
+          this.drawText(ctx, mData);//画文字
+          this.drawCircle(ctx, mData);//画区域块焦点
+          this.drawRegion(ctx, mData);//画数据区域块
+          setTimeout(function () {
+            self.Interval = setInterval(function () {
+              if (precent <= 0.8) {
+                self.drawRegion(ctx, mData);//画数据区域块
+              } else {
+                clearInterval(self.Interval);
+              }
+            }, spaceTime);
+          }, 100);
+        }
+        self.$apply();
+      },error => {
+        wx.hideLoading() ;
+        self.infoList =[];
+      });
+    }
     //绘制数据区域
     drawRegion(ctx, mData){
       ctx.save();
@@ -339,42 +374,7 @@
       ctx.restore();
     }
     onLoad() {
-      // 获取所有的明星教师教师
-      var teachersQuery = new AV.Query('Teachers');
-      wx.showLoading({
-        title: '加载中',
-      });
-      var self = this;
-      // 表示为明星教员
-      teachersQuery.equalTo('teacherType', '0');
-      teachersQuery.find().then(res=> {
-        wx.hideLoading() ;
-        console.log(res)
-
-        self.infoList = res;
-        // 开始绘制当前的教师信息
-        const ctx = wx.createCanvasContext('radarcanvas');
-        var mData = [['经验', 30], ['方法', 50], ['点评', 70], ['信誉', 50], ['专业', 80], ['沟通', 50]];
-        this.drawPolygon(ctx, mData);//画伞架
-        this.drawText(ctx, mData);//画文字
-        this.drawCircle(ctx, mData);//画区域块焦点
-        self.drawRegion(ctx, mData);//画数据区域块
-        setTimeout(function () {
-          self.Interval = setInterval(function () {
-            if (precent <= 1) {
-              self.drawRegion(ctx, mData);//画数据区域块
-            } else {
-              clearInterval(self.Interval);
-            }
-          }, spaceTime);
-        }, 1000);
-
-        self.$apply();
-      },error => {
-        wx.hideLoading() ;
-        self.infoList =[];
-      });
-
+      this.loadTeachersList('5b2b683cac502e0031b06356');
     }
   }
 </script>

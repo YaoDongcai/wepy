@@ -29,11 +29,11 @@
         {{ teacherList[areaIndex].name }}
       </picker>
 
-     </view> 
+     </view>
     <div class="zan-cell "  @tap = "chooseVideo">
       <view class="zan-cell__hd">
       选择视频</view>
-     
+
     </div>
     <video class="video" src="{{video}}" wx:if="{{video}}"></video>
     <view class="zan-cell" style="justify-content:center">
@@ -79,7 +79,7 @@
         // 开始上传;
        wx.showLoading({
         title: '提交中',
-      }); 
+      });
         new AV.File('自拍视频', {
       blob: {
         uri: self.video,
@@ -98,7 +98,7 @@
         // 当前的teacher 信息;
         var teacherId = self.teacherList[self.areaIndex].id;
         console.log(self.teacherList[self.areaIndex].id);
-        var teacher = AV.Object.createWithoutData('Teachers',teacherId);  
+        var teacher = AV.Object.createWithoutData('Teachers',teacherId);
         Work.set('teacher', teacher);
         Work.save().then(success=> {
           console.log(success.id);
@@ -120,19 +120,19 @@
               duration: 2000
             })
           console.log(error.message)
-        })  
+        })
       }
-      
+
     ).catch(console.error);
       },
       // 选择视频;
       chooseVideo() {
           // 上传视频;
-          // 
+          //
         var that = this;
         wx.chooseVideo({
         sourceType: ['album', 'camera'],
-        maxDuration:60,
+        maxDuration:180,
         camera: 'back',
         success: function (res) {
           console.log(res.tempFilePath)
@@ -177,7 +177,7 @@ var StudentBIndToTeacher = new AV.Query('StudentBIndToTeacher');
               self.$apply();
             }
           },error => {
-            
+
           });
     }
   }
