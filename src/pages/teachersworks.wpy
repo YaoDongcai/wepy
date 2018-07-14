@@ -93,6 +93,7 @@
       console.log(username.username)
       var self = this;
       var teachersList = new AV.Query('Teachers');
+
       var work = new AV.Query('Work');
       wx.showLoading({
         title: '加载中',
@@ -113,6 +114,7 @@
 
         var teacher = AV.Object.createWithoutData('Teachers', teacherId);
         work.equalTo('teacher',teacher);
+        work.descending('createdAt');
         work.find().then(res2 => {
           self.teacherworksList = res2;
           self.$apply();

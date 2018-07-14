@@ -2,6 +2,7 @@
   @import '/zanui/col.wxss';
   @import '/zanui/row.wxss';
   @import '/zanui/panel.wxss';
+  @import '/zanui/tag.wxss';
   .zan-tab {
     text-align: center;
   }
@@ -111,9 +112,28 @@
           </view>
         </view>
 
-        <view class="zan-col zan-col-11">
-          <!--<image src="{{item.lz_img}}" width="100%;"></image>-->
-          <canvas class="canvas" canvas-id="radarcanvas{{idx}}" disable-scroll="false"  />
+        <view class="zan-col zan-col-offset-3 zan-col-5" style="text-align: center;">
+          <view class="teacher-item" >
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              经验 : <span style="color:#6FA8DC;">{{item.ability[0]}}</span>
+            </view>
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              方法 : <span style="color:#6FA8DC;">{{item.ability[1]}}</span>
+            </view>
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              点评 : <span style="color:#6FA8DC;">{{item.ability[2]}}</span>
+            </view>
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              信誉 : <span style="color:#6FA8DC;">{{item.ability[3]}}</span>
+            </view>
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              专业 : <span style="color:#6FA8DC;">{{item.ability[4]}}</span>
+            </view>
+            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
+              沟通 : <span style="color:#6FA8DC;">{{item.ability[5]}}</span>
+            </view>
+          </view>
+          <!--<canvas class="canvas" canvas-id="radarcanvas{{idx}}" disable-scroll="false"  />-->
         </view>
       </view>
     </view>
@@ -310,23 +330,23 @@
 
         self.infoList = res;
         // 开始绘制当前的教师信息
-        for(var index=0;index<self.infoList.length;index++) {
-          const ctx = wx.createCanvasContext('radarcanvas'+index);
-          var mData = [['经验', 30 + index*2], ['方法', 50+ index*1], ['点评', 70 +index*1], ['信誉', 50], ['专业', 80], ['沟通', 50]];
-          this.drawPolygon(ctx, mData);//画伞架
-          this.drawText(ctx, mData);//画文字
-          this.drawCircle(ctx, mData);//画区域块焦点
-          this.drawRegion(ctx, mData);//画数据区域块
-          setTimeout(function () {
-            self.Interval = setInterval(function () {
-              if (precent <= 0.8) {
-                self.drawRegion(ctx, mData);//画数据区域块
-              } else {
-                clearInterval(self.Interval);
-              }
-            }, spaceTime);
-          }, 100);
-        }
+//        for(var index=0;index<self.infoList.length;index++) {
+//          const ctx = wx.createCanvasContext('radarcanvas'+index);
+//          var mData = [['经验', 30 + index*2], ['方法', 50+ index*1], ['点评', 70 +index*1], ['信誉', 50], ['专业', 80], ['沟通', 50]];
+//          this.drawPolygon(ctx, mData);//画伞架
+//          this.drawText(ctx, mData);//画文字
+//          this.drawCircle(ctx, mData);//画区域块焦点
+//          this.drawRegion(ctx, mData);//画数据区域块
+//          setTimeout(function () {
+//            self.Interval = setInterval(function () {
+//              if (precent <= 0.8) {
+//                self.drawRegion(ctx, mData);//画数据区域块
+//              } else {
+//                clearInterval(self.Interval);
+//              }
+//            }, spaceTime);
+//          }, 100);
+//        }
         self.$apply();
       },error => {
         wx.hideLoading() ;

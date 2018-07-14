@@ -322,8 +322,9 @@ image {
       //
       var query = new AV.Query('_User');
       query.get(user.id).then(res=> {
-        console.log(res.get('auth'))
-        if(res.get('auth') == '' ){
+        console.log(res)
+        console.log('auth' +res.get('auth'))
+        if(res.get('auth') == undefined || res.get('auth') ==''){
           self.type = '';
         }else if(res.get('auth') == '0') {
           self.type = '0';
