@@ -58,6 +58,9 @@
     margin-top:0rpx;
     text-align: left;
   }
+  .teacher-workagancy span {
+    color:rgb(255,153,0);
+  }
   .zan-col.zan-col-8 .teacher-rank {
     font-size:40rpx;
     text-align: center;
@@ -112,25 +115,25 @@
           </view>
         </view>
 
-        <view class="zan-col zan-col-offset-3 zan-col-5" style="text-align: center;">
+        <view class="zan-col zan-col-offset-2 zan-col-6" style="text-align: center;">
           <view class="teacher-item" >
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              经验 : <span style="color:#6FA8DC;">{{item.ability[0]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              经验 : <span >{{item.ability[0]}}</span>
             </view>
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              方法 : <span style="color:#6FA8DC;">{{item.ability[1]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              方法 : <span >{{item.ability[1]}}</span>
             </view>
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              点评 : <span style="color:#6FA8DC;">{{item.ability[2]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              点评 : <span >{{item.ability[2]}}</span>
             </view>
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              信誉 : <span style="color:#6FA8DC;">{{item.ability[3]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              信誉 : <span >{{item.ability[3]}}</span>
             </view>
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              专业 : <span style="color:#6FA8DC;">{{item.ability[4]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              专业 : <span >{{item.ability[4]}}</span>
             </view>
-            <view class="teacher-workagancy" style="color:#999999;font-size:14px;">
-              沟通 : <span style="color:#6FA8DC;">{{item.ability[5]}}</span>
+            <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
+              沟通 : <span  >{{item.ability[5]}}</span>
             </view>
           </view>
           <!--<canvas class="canvas" canvas-id="radarcanvas{{idx}}" disable-scroll="false"  />-->

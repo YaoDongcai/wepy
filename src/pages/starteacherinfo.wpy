@@ -11,8 +11,8 @@
   <!-- 用户提交预约教师 -->
   <view class="zan-panel">
     <view class="zan-cell" >
-      <view class="zan-cell__bd">{{location}}</view>
-      <view class="zan-cell__ft" @tap="toAppointTeacher">立即预约</view>
+      <view class="zan-cell__bd" @tap="locationChoise">{{location}}</view>
+      <view class="zan-cell__ft" @tap="toAppointTeacher">绑定教员</view>
     </view>
   </view>
   <view style="margin: 20px 0">
@@ -100,6 +100,25 @@
         var url = "/pages/appointteacher?id=" + this.objectId;
         wx.navigateTo({
           url: url,
+        })
+      },
+      locationChoise() {
+        const self = this;
+        // 开始获取当前的地理位置 ak=67d28f499072d22dba8a978e2431794f;
+        wx.chooseLocation({
+          success: function (res) {
+            // success
+            console.log(res.name)
+            self.location = res.name;
+            self.$apply();
+          },
+          fail: function () {
+            // 定位失败;
+
+          },
+          complete: function () {
+            // complete
+          }
         })
       }
     }

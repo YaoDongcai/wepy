@@ -101,7 +101,10 @@
         wx.hideLoading() ;
 
         self.infoList = res;
-        console.log(res)
+        res.map(item=> {
+          // item.set('createdAt','123')
+          console.log(item.get('createdAt'));
+        })
         if(self.infoList.length == 0) {
           self._true = true;
         }

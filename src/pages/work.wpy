@@ -110,9 +110,15 @@
               icon: 'success',
               duration: 2000
             });
-          wx.navigateTo({
-          url: "/pages/home"
-        })
+          wx.navigateBack({
+            delta: 1
+          })
+          // wx.navigateTo({
+          //   url: "/pages/personalPlan"
+          // })
+        //   wx.navigateTo({
+        //   url: "/pages/home"
+        // })
         }, error => {
           wx.showToast({
               title: '提交失败',
