@@ -163,9 +163,10 @@
 
       // 获取该学生绑定的教师;
 
-var StudentBIndToTeacher = new AV.Query('StudentBIndToTeacher');
+var StudentBIndToTeacher = new AV.Query('AppointTeacher');
           StudentBIndToTeacher.include(['teacherId']);
-          StudentBIndToTeacher.equalTo('username',username.username);
+          StudentBIndToTeacher.equalTo('user',AV.User.current());
+          StudentBIndToTeacher.equalTo('status','1'); // 表示绑定
           StudentBIndToTeacher.find().then(res=> {
             console.log(res)
             if(res.length == 0) {

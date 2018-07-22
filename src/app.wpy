@@ -36,7 +36,8 @@ export default class extends wepy.app {
       "pages/starteacherinfo",
       "pages/appointteacher",
       "pages/campuscattle",
-      "pages/mastercattle"
+      "pages/mastercattle",
+      "pages/order"
     ],
 
     window: {

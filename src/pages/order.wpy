@@ -1,0 +1,91 @@
+<style>
+  @import '/zanui/panel.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/col.wxss';
+  @import '/zanui/btn.wxss';
+</style>
+
+<template>
+  <view class="zan-panel-title">
+    我的订单
+  </view>
+  <view class="zan-panel" style="margin:15px;font-size: 14px;line-height: 40px;color: #999;">
+
+    <view class="zan-cell">
+      <view class="zan-row" style="text-align: center;height:40px;" wx:key="index" wx:for="{{orderList}}">
+        <view class="zan-col zan-col-8" >
+          {{item.name}}
+        </view>
+        <view class="zan-col zan-col-10">
+          {{item.phone}}
+        </view>
+        <view class="zan-col zan-col-6">
+          <view wx:if="{{item.status == '0'}}" class="zan-btn zan-btn--small zan-btn--primary" @tap="setState({{index}},'1')">
+            去绑定
+          </view>
+          <view wx:if="{{item.status == '1'}}" class="zan-btn zan-btn--small zan-btn--warn" @tap="setState({{index}},'0')">
+            解绑
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class Template  extends wepy.page {
+    config = {
+      navigationBarTitleText: ''
+    }
+    data = {
+      orderList:[],// 订单列表
+    }
+    methods = {
+      setState(index,param) {
+        wx.showLoading({
+          title: '操作中',
+          mask: true
+        });
+        var item = this.orderList[index];
+        const self = this;
+        item.set("status",param).save().then(res=> {
+          wx.hideLoading();
+          // 这个时候重新请求一下数据：
+          self.getAllOrderList()
+        },error=> {
+          console.log('保存失败');
+          wx.hideLoading();
+        });
+
+      }
+    }
+    getAllOrderList () {
+      var self = this;
+      const userInfo = this.$parent.globalData.username;
+      const username = userInfo.username;
+      // 需要去teachers 里面去查下自己的id;
+      var query = new AV.Query('Teachers');
+      query.equalTo("username",username);
+      query.find().then(res=> {
+        console.log(res)
+        // 找到自己的信息;
+        var userOb = res[0];
+        var queryAppointTeachers = new AV.Query("AppointTeacher");
+        queryAppointTeachers.equalTo("teacherId", res[0]);
+        queryAppointTeachers.find().then(res2=> {
+          self.orderList = res2;
+          self.$apply();
+        }, error2=> {
+          console.log(error2)
+        });
+      });
+    }
+    onLoad() {
+        // 获取当前的这个人的数据;
+      this.getAllOrderList()
+    }
+  }
+</script>

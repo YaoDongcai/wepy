@@ -94,9 +94,9 @@ image {
 </view>
 
 <view class="zan-panel" wx:if="{{type == '0'}}">
-    <view class="card">
+    <view class="card" @tap="toMyOrder">
       <view class="title">
-        教师版
+        我的订单
       </view>
     </view>
 </view>
@@ -203,6 +203,12 @@ image {
       });
     }
     methods = {
+    // 我的订单
+      toMyOrder() {
+        wx.navigateTo({
+          url: "/pages/order"
+        })
+      },
       // 去大师排行榜
       toMasterCattle() {
         wx.navigateTo({
