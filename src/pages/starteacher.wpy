@@ -115,7 +115,7 @@
           </view>
         </view>
 
-        <view class="zan-col zan-col-offset-2 zan-col-6" style="text-align: center;">
+        <view class="zan-col zan-col-offset-2 zan-col-9" style="text-align: center;">
           <view class="teacher-item" >
             <view class="teacher-workagancy" style="color:#999999;font-size:12px;">
               经验 : <span >{{item.ability[0]}}</span>

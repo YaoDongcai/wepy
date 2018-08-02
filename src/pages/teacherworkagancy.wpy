@@ -52,17 +52,17 @@
     }
     onLoad() {
       // 获取琴行信息;
-      // 
+      //
       var workAgancy = new AV.Query('WorkAgancy');
       wx.showLoading({
         title: '加载中',
-      }); 
+      });
       var self = this;
       workAgancy.find().then(res=> {
         wx.hideLoading() ;
         console.log(res)
         self.infoList = res;
-        
+
         self.$apply();
       },error => {
         wx.hideLoading() ;

@@ -12,7 +12,7 @@
   <view class="zan-panel" style="margin:15px;font-size: 14px;line-height: 40px;color: #999;">
 
     <view class="zan-cell">
-      <view class="zan-row" style="text-align: center;height:40px;" wx:key="index" wx:for="{{orderList}}">
+      <view class="zan-row"  style="border-bottom: 1px solid  #e5e5e5;text-align: center;height:40px;" wx:key="index" wx:for="{{orderList}}">
         <view class="zan-col zan-col-8" >
           {{item.name}}
         </view>

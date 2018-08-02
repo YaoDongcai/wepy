@@ -5,6 +5,8 @@
   @import '/zanui/cell.wxss';
   @import '/zanui/btn.wxss';
   @import '/zanui/tag.wxss';
+  @import '/zanui/row.wxss';
+  @import '/zanui/col.wxss';
   .zan-card__thumb .zan-card__img {
     border-radius:45rpx;
   }
@@ -13,6 +15,16 @@
   margin-left:10rpx;
   margin-right:10rpx;
 }
+  .userinfo {
+    display: flex;
+    justify-content: center;
+    height:100rpx;
+    align-items: center;
+  }
+
+  .userinfo-nickname {
+    color: #aaa;
+  }
 </style>
 
 
@@ -49,17 +61,56 @@
       </view>
     </view>
   </view>
+  <view class="zan-panel" style="margin:15px;font-size: 14px;line-height: 40px;color: #999;">
 
-
-<view>作业如下</view>
-
-<view class="zan-panel">
-    <view class="zan-cell" wx:for="{{teacherworksList}}" wx:key="key">
-      <view class="zan-cell__bd" wx:if="{{item.mark == '0'}}">未批改</view>
-      <view class="zan-cell__bd" wx:if="{{item.mark == '1'}}">已批改</view>
-      <view class="zan-cell__ft" @tap = "checkwork({{item.objectId}})">查看详情作业</view>
+    <view  style="border-bottom: 1px solid  #e5e5e5" wx:key="index" wx:for="{{teacherworksList}}">
+      <view class="zan-row" style="text-align: center;height:45px;" @tap = "checkwork({{item.objectId}})">
+        <view class="zan-col zan-col-8" >
+          {{item.user.nickName ||'暂无'}}
+        </view>
+        <view class="zan-col zan-col-10">
+          {{item.title ||'暂无'}}
+        </view>
+        <view class="zan-col zan-col-6">
+          <view wx:if="{{item.mark == '0'}}" class="zan-btn zan-btn--small zan-btn--primary" >
+            待批改
+          </view>
+          <view wx:if="{{item.mark == '1'}}" class="zan-btn zan-btn--small zan-btn--warn" >
+            已批改
+          </view>
+        </view>
+      </view>
     </view>
+
   </view>
+
+
+
+<!--<view class="zan-panel" wx:for="{{teacherworksList}}" wx:key="key">-->
+  <!--&lt;!&ndash; avatarUrl&ndash;&gt;-->
+
+
+
+
+
+    <!--<view class="zan-cell">-->
+      <!--<view class="userinfo-avatar">-->
+        <!--<image src="{{item.user.avatarUrl}}" style="width:100rpx;height:100rpx;border-radius: 50%;"  />-->
+
+      <!--</view>-->
+      <!--<view class="userinfo-nickname">-->
+        <!--{{item.user.nickName}}-->
+      <!--</view>-->
+      <!--<view class="userinfo-nickname" style="padding-left:20px;">-->
+        <!--作品名称:{{item.title}}-->
+      <!--</view>-->
+    <!--</view>-->
+    <!--<view class="zan-cell" >-->
+      <!--<view class="zan-cell__bd" wx:if="{{item.mark == '0'}}">未批改</view>-->
+      <!--<view class="zan-cell__bd" wx:if="{{item.mark == '1'}}">已批改</view>-->
+      <!--<view class="zan-cell__ft" @tap = "checkwork({{item.objectId}})">查看详情作业</view>-->
+    <!--</view>-->
+  <!--</view>-->
 </template>
 
 <script>
@@ -99,7 +150,7 @@
         title: '加载中',
       });
 
-      teachersList.equalTo('workagancyId', workagancyid );
+      // teachersList.equalTo('workagancyId', workagancyid );
       teachersList.equalTo('username', username.username);
       teachersList.find().then(res=> {
         // self.teacher = res;
@@ -114,6 +165,7 @@
 
         var teacher = AV.Object.createWithoutData('Teachers', teacherId);
         work.equalTo('teacher',teacher);
+        work.include('user');
         work.descending('createdAt');
         work.find().then(res2 => {
           self.teacherworksList = res2;

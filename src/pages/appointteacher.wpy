@@ -79,6 +79,7 @@
           this.$invoke('zanToptips', 'showZanTopTips', { content: '号码不能为空', options: 1000 });
           return false;
         }
+        // query for first;
 
         const AppointTeacherClass = AV.Object.extend('AppointTeacher');
         const AppointTeacher = new AppointTeacherClass();
@@ -90,28 +91,43 @@
         // 当前的teacher 信
         const user = AV.User.current();
         var teacher = AV.Object.createWithoutData('Teachers',id);
-        AppointTeacher.set('teacherId', teacher);
-        AppointTeacher.set('user', user);
-        AppointTeacher.save().then(success=> {
-          wx.hideLoading() ;
-          wx.showToast({
-            title: '提交成功',
-            icon: 'success',
-            duration: 2000
-          });
 
-          // 回到首页
-          wx.navigateBack({
-            delta: 1
-          })
-        }, error => {
-          wx.showToast({
-            title: '提交失败',
-            icon: 'success',
-            duration: 2000
-          })
-          console.log(error.message)
-        })
+        var queryIsOrFirst = new AV.Query('AppointTeacher');
+        queryIsOrFirst.equalTo('teacherId',teacher);
+        queryIsOrFirst.equalTo('user', user);
+        queryIsOrFirst.find().then(res=> {
+          if(res.length >0) {
+            wx.showToast({
+              title: 'has appoint !',
+              icon: 'success',
+              duration: 2000
+            })
+          }else {
+            AppointTeacher.set('teacherId', teacher);
+            AppointTeacher.set('user', user);
+            AppointTeacher.save().then(success=> {
+              wx.hideLoading() ;
+              wx.showToast({
+                title: '提交成功',
+                icon: 'success',
+                duration: 2000
+              });
+
+              // 回到首页
+              wx.navigateBack({
+                delta: 1
+              })
+            }, error => {
+              wx.showToast({
+                title: '提交失败',
+                icon: 'success',
+                duration: 2000
+              })
+              console.log(error.message)
+            })
+          }
+        });
+
       },
 
       formReset(event) {

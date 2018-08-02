@@ -100,6 +100,8 @@
         console.log(self.teacherList[self.areaIndex].id);
         var teacher = AV.Object.createWithoutData('Teachers',teacherId);
         Work.set('teacher', teacher);
+        const user = AV.User.current();
+        Work.set('user',user);
         Work.save().then(success=> {
           console.log(success.id);
           console.log('作业提交成功');
@@ -135,16 +137,24 @@
       chooseVideo() {
           // 上传视频;
           //
+        console.log('-----chooseVideo')
         var that = this;
         wx.chooseVideo({
         sourceType: ['album', 'camera'],
-        maxDuration:180,
+        maxDuration:60,
         camera: 'back',
         success: function (res) {
+
           console.log(res.tempFilePath)
           that.video = res.tempFilePath;
           that.$apply();
-        }
+        },
+          fail: function (e) {
+            wx.showToast({
+              title: '视频大于60秒，请重新选择',
+              duration: 2000
+            })
+          }
     })
       }
     }

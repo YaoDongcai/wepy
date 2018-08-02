@@ -95,27 +95,35 @@ image {
 
 <view class="zan-panel" wx:if="{{type == '0'}}">
     <view class="card" @tap="toMyOrder">
-      <view class="title">
-        我的订单
-      </view>
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/f0b9df31f6ea23bb1fb5.png" style="width:100%;height:100%;" ></image>
+
+      <view  style="position:absolute;left:30px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >学员订单</view>
     </view>
 </view>
 
-<view class="zan-panel" wx:if="{{type == '0'}}">
-    <view class="card" @tap="toworkagancy">
-      <view class="title">
-        作业提交
-      </view>
+
+  <view class="zan-panel" wx:if="{{type == '0'}}">
+    <view class="card" @tap="teachersForWork">
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/eb310a0693bfa5d823cb.png" style="width:100%;height:100%;" ></image>
+      <view style="position:absolute;left:80px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >学生作业</view>
     </view>
   </view>
 
   <view class="zan-panel" wx:if="{{type == '0'}}">
-    <view class="card" @tap="joinworkagancy">
-      <view class="title">
-        加入琴行
-      </view>
+    <view class="card"  >
+      <image src="http://lc-yub1lbct.cn-n1.lcfile.com/b2506711b4ead3ecddbd.png" style="width:100%;height:100%;" ></image>
+      <view style="position:absolute;left:170px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >在线课程</view>
     </view>
   </view>
+
+
+  <!--<view class="zan-panel" wx:if="{{type == '0'}}">-->
+    <!--<view class="card" @tap="joinworkagancy">-->
+      <!--<view class="title">-->
+        <!--加入琴行-->
+      <!--</view>-->
+    <!--</view>-->
+  <!--</view>-->
 
   <view class="zan-panel" style="" wx:if="{{type == '1'}}">
     <view class="card" @tap="toStartTeacher">
@@ -130,7 +138,6 @@ image {
     <view class="card" @tap="toCampusCattle">
       <image src="http://lc-yub1lbct.cn-n1.lcfile.com/eb310a0693bfa5d823cb.png" style="width:100%;height:100%;" ></image>
       <view style="position:absolute;left:80px;font-size:50rpx;line-height:50rpx;color:rgb(68,68,68);" >校园牛人榜</view>
-
     </view>
   </view>
 
@@ -223,9 +230,27 @@ image {
       },
       toStartTeacher() {
         // 到明星教员列表页面
-        wx.navigateTo({
-          url: "/pages/starteacher"
-        })
+        const that = this;
+        const user = AV.User.current();
+        console.log(user)
+        // 调用小程序 API，得到用户信息
+        wx.getUserInfo({
+          success: ({userInfo}) => {
+            // 更新当前用户的信息，昵称头像等
+            user.set(userInfo).save().then(user => {
+              // 成功，此时可在控制台中看到更新后的用户信息
+              console.log(user)
+              that.userInfo = userInfo;
+              that.$apply();
+              wx.navigateTo({
+                url: "/pages/starteacher"
+              })
+
+            }).catch(console.error);
+          }
+        });
+
+
       },
       // 获取身份提交的数据
       formSubmit(event) {
@@ -262,7 +287,7 @@ image {
       // 教师版本的提交的作业;
       teachersForWork() {
         wx.navigateTo({
-           url: "/pages/workhistory"
+           url: "/pages/teachersworks"
         })
       },
       // 历史情况页面
@@ -303,27 +328,17 @@ image {
       // 获取banner的图片;
       that.loadBanner();
       // 获得当前登录用户
-      const user = AV.User.current();
-      // 调用小程序 API，得到用户信息
-      wx.getUserInfo({
-        success: ({userInfo}) => {
-          // 更新当前用户的信息，昵称头像等
-          console.log(userInfo)
-          user.set(userInfo).save().then(user => {
-            // 成功，此时可在控制台中看到更新后的用户信息
-            console.log(user)
-            that.userInfo = userInfo
-            that.$apply();
-          }).catch(console.error);
-        }
-      });
     }
+    onUnload()  {
 
+
+    }
 
     onLoad() {
       const self = this;
     // 表示开始用这个用户去登录;
     AV.User.loginWithWeapp().then(user => {
+      console.log(user);
       self.$parent.globalData.username = user.toJSON();
       //
       var query = new AV.Query('_User');
