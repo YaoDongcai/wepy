@@ -34,7 +34,7 @@
     </view>
   </view>
 
-  <view class="zan-panel">
+  <view class="zan-panel" wx:if="{{type == '1'}}">
     <view class="zan-cell">
       <view class="zan-cell__bd" @tap="personalPlan()">初练成长计划</view>
       <view class="zan-cell__ft">
@@ -43,40 +43,41 @@
     </view>
   </view>
   <view class="zan-panel">
-    <view class="zan-cell">
+    <view class="zan-cell" @tap="feedback()">
       <view class="zan-cell__bd">意见反馈</view>
-      <view class="zan-cell__ft">
+      <view class="zan-cell__ft">0,
          <view class="zan-icon zan-icon-arrow"></view>
       </view>
     </view>
   </view>
-  <view class="zan-panel">
-    <view class="zan-cell">
-      <view class="zan-cell__bd" @tap="teachers()">我的教员</view>
-      <view class="zan-cell__ft">
-         <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-    </view>
-  </view>
-  <view class="zan-panel">
-    <view class="zan-cell" >
-      <view class="zan-cell__bd">订单提交</view>
-      <view class="zan-cell__ft">
-         <view class="zan-icon zan-icon-arrow"></view>
-      </view>
-    </view>
-  </view>
+  <!--<view class="zan-panel">-->
+    <!--<view class="zan-cell">-->
+      <!--<view class="zan-cell__bd" @tap="teachers()">我的教员</view>-->
+      <!--<view class="zan-cell__ft">-->
+         <!--<view class="zan-icon zan-icon-arrow"></view>-->
+      <!--</view>-->
+    <!--</view>-->
+  <!--</view>-->
+  <!--<view class="zan-panel">-->
+    <!--<view class="zan-cell" >-->
+      <!--<view class="zan-cell__bd">订单提交</view>-->
+      <!--<view class="zan-cell__ft">-->
+         <!--<view class="zan-icon zan-icon-arrow"></view>-->
+      <!--</view>-->
+    <!--</view>-->
+  <!--</view>-->
 </template>
 
 <script>
   import wepy from 'wepy'
-
+  import AV from '../libs/av-weapp-min';
   export default class Me  extends wepy.page {
     config = {
       navigationBarTitleText: '我'
     }
     data = {
-      userInfo : null
+      userInfo : null,
+      type: '',
     }
     computed = {
 
@@ -93,12 +94,22 @@
          wx.navigateTo({
            url: "/pages/workagancy"
         })
+      },
+      feedback() {
+        // 我的老师部分;
+        wx.navigateTo({
+          url: "/pages/feedback"
+        })
       }
     }
     onLoad() {
       console.log('onLoad')
       // 关于我
       this.userInfo = this.$parent.globalData.userInfo.userInfo;
+      const user = AV.User.current();
+      console.log(user);
+      this.type = user.get('auth');
+      this.$apply();
       console.log(this.userInfo);
     }
   }

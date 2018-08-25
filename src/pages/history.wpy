@@ -15,7 +15,7 @@
 }
 </style>
 <template>
- <div class="zan-panel-title">练琴记录</div>
+ <!--<div class="zan-panel-title">练琴记录</div>-->
   <div class="zan-panel">
     <view class="zan-card" wx:for="{{infoList}}" wx:key="key">
        <view class="zan-cell">
@@ -51,7 +51,7 @@
 
 <script>
   import wepy from 'wepy'
-  import api from '../api/api';
+  // import api from '../api/api';
   import AV from '../libs/av-weapp-min'
     import zanLoadmore from '../components/zan-loadmore'
   export default class History extends wepy.page {

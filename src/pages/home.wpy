@@ -171,6 +171,7 @@ image {
 //      this.$invoke('zanToptips', 'showZanTopTips', { content: '已经为最新内容', options: 2000 })
     }
     data = {
+      canIUse: wx.canIUse('button.open-type.getUserInfo'),
       banner:[],// banner的图片
 
       type: null,
@@ -210,6 +211,9 @@ image {
       });
     }
     methods = {
+      bindGetUserInfo: function(e) {
+        console.log(e.detail.userInfo)
+      },
     // 我的订单
       toMyOrder() {
         wx.navigateTo({
@@ -335,6 +339,22 @@ image {
     }
 
     onLoad() {
+      wx.getSetting({
+        success: function(res){
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+            wx.getUserInfo({
+              success: function(res) {
+                console.log(res.userInfo)
+              }
+            })
+          }
+        }
+      });
+
+
+
+
       const self = this;
     // 表示开始用这个用户去登录;
     AV.User.loginWithWeapp().then(user => {
@@ -349,7 +369,9 @@ image {
           self.type = '';
         }else if(res.get('auth') == '0') {
           self.type = '0';
+
         }else {
+
          self.type = '1';
         };
         self.$apply();

@@ -12,7 +12,7 @@
 </style>
 
 <template>
-  <div class="zan-panel-title">提交作业</div>
+  <!--<div class="zan-panel-title">提交作业</div>-->
   <div class="zan-panel">
     <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1>
 
@@ -50,7 +50,7 @@
   import AV from '../libs/av-weapp-min'
   export default class Work extends wepy.page {
     config = {
-      navigationBarTitleText: '作业'
+      navigationBarTitleText: '作业提交'
     }
     components = {
       zanField1: zanField

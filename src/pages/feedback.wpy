@@ -1,0 +1,100 @@
+<style lang="css">
+  @import '/zanui/panel.wxss';
+  @import '/zanui/btn.wxss';
+  .field__title--radius {
+    padding-bottom: 10px;
+  }
+</style>
+
+<template>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class="zan-panel">
+      <zanField1 :options="form_title" componentId="zanField1"></zanField1>
+      <!--<zanField2 :options="form_desc" componentId="zanField2"></zanField2>-->
+      <view class="zan-cell">
+        <textarea name="textarea" auto-height placeholder="详情" style="min-height: 100px;width:100%;"/>
+      </view>
+      <view class="zan-btns">
+        <button
+          class="zan-btn zan-btn--primary"
+          formType="submit">提交数据</button>
+      </view>
+
+      </view>
+  </form>
+  <zanToptips/>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import zanToptips from '../components/zan-toptips'
+  import zanField from '../components/zan-field'
+  import AV from '../libs/av-weapp-min'
+  export default class FeedBack  extends wepy.page {
+    config = {
+      navigationBarTitleText: '反馈'
+    }
+    components = {
+      zanField1: zanField,
+      zanToptips
+    }
+    data = {
+      height: 120,
+      // Form 中使用输入框
+      form_title: {
+        name: 'title',
+        placeholder: '请输入反馈主题',
+        componentId: 'form:test:title'
+      },
+
+//      form_desc: {
+//        name: 'desc',
+//        placeholder: '请输入反馈的信息',
+//        componentId: 'form:test:desc'
+//      },
+    }
+    methods = {
+      formSubmit(event) {
+        console.log('[zan:field:submit]', event.detail.value);
+        // 数据不为空;
+        var title = event.detail.value.title;
+        var textarea = event.detail.value.textarea;
+
+        if(title=='') {
+          // 提醒输入title;
+          this.$invoke('zanToptips', 'showZanTopTips', { content: '标题不能为空哦', options: 2000 })
+          return ;
+        }
+        if(textarea == '') {
+          this.$invoke('zanToptips', 'showZanTopTips', { content: '描述不能为空哦', options: 2000 })
+          return ;
+        }
+        // 提交反馈信息到后台;
+        const Feedback = AV.Object.extend('Feedback');
+        const feedback = new Feedback();
+        wx.showLoading({
+          title: '提交中',
+        });
+        feedback.set('title',title);//
+        feedback.set('desc',textarea)//
+        const user = AV.User.current();
+        feedback.set('user', user)// 设置用户的ID
+        feedback.save().then(res=> {
+          wx.hideLoading() ;
+          // 返回到上一页;
+          wx.switchTab({
+            url: '/pages/me'
+          })
+        },error=> {
+          wx.hideLoading() ;
+          wx.switchTab({
+            url: '/pages/me'
+          })
+        })
+      },
+    }
+    onLoad() {
+
+    }
+  }
+</script>

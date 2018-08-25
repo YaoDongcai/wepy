@@ -100,21 +100,21 @@
     </view>
   </view>
 
-  <view class="title-item">
-    我的成果展示
-  </view>
-  <!--  个人的视频展示 -->
-  <view class="zan-row" >
-    <view class="zan-col zan-col-8">
-      <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235976085ad04128df043.jpg" ></image>
-    </view>
-    <view class="zan-col zan-col-8">
-      <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>
-    </view>
-    <view class="zan-col zan-col-8">
-      <image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>
-    </view>
-  </view>
+  <!--<view class="title-item">-->
+    <!--我的成果展示-->
+  <!--</view>-->
+  <!--&lt;!&ndash;  个人的视频展示 &ndash;&gt;-->
+  <!--<view class="zan-row" >-->
+    <!--<view class="zan-col zan-col-8">-->
+      <!--<image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235976085ad04128df043.jpg" ></image>-->
+    <!--</view>-->
+    <!--<view class="zan-col zan-col-8">-->
+      <!--<image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>-->
+    <!--</view>-->
+    <!--<view class="zan-col zan-col-8">-->
+      <!--<image src="http://img.zhichiwangluo.com/zcimgdir/thumb/t_15235971305ad03f4ab5ada.jpg" ></image>-->
+    <!--</view>-->
+  <!--</view>-->
 
 </template>
 
@@ -123,7 +123,7 @@
   import AV from '../libs/av-weapp-min';
   export default class personalPlan extends wepy.page {
     config = {
-      navigationBarTitleText: '初练计划'
+      navigationBarTitleText: '初练成长计划'
     };
 
 

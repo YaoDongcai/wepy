@@ -50,7 +50,7 @@
 <script>
   import wepy from 'wepy'
   import zanToptips from '../components/zan-toptips'
-  import api from '../api/api';
+  // import api from '../api/api';
   export default class Current extends wepy.page {
     config = {
       navigationBarTitleText: '课后作业'
@@ -83,7 +83,7 @@
       var self = this;
 
       self.userInfo = this.$parent.globalData.userInfo.username;
-      
+
     }
   }
 </script>

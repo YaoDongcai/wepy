@@ -37,7 +37,8 @@ export default class extends wepy.app {
       "pages/appointteacher",
       "pages/campuscattle",
       "pages/mastercattle",
-      "pages/order"
+      "pages/order",
+      "pages/feedback"
     ],
 
     window: {
@@ -75,7 +76,6 @@ export default class extends wepy.app {
     userInfo: null,
     username: null, //用户小程序登录的唯一ID
   }
-
 
   async onLaunch() {
     // 开始初始化这个组件

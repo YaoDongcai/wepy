@@ -48,7 +48,7 @@
   import wepy from 'wepy'
   import AV from '../libs/av-weapp-min'
   import zanToptips from '../components/zan-toptips'
-  import api from '../api/api';
+  // import api from '../api/api';
   export default class Teachers  extends wepy.page {
     config = {
       navigationBarTitleText: '教师详情'
@@ -62,7 +62,7 @@
           wx.navigateTo({
            url: url,
         })
-      } 
+      }
     }
     data= {
       userInfo:null,
@@ -78,7 +78,7 @@
       var teachersList = new AV.Query('Teachers');
       wx.showLoading({
         title: '加载中',
-      }); 
+      });
       teachersList.equalTo('workagancyId', id);
       teachersList.find().then(res=> {
         self.infoList = res;
