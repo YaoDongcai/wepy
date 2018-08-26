@@ -45,7 +45,7 @@
   <view class="zan-panel">
     <view class="zan-cell" @tap="feedback()">
       <view class="zan-cell__bd">意见反馈</view>
-      <view class="zan-cell__ft">0,
+      <view class="zan-cell__ft">
          <view class="zan-icon zan-icon-arrow"></view>
       </view>
     </view>

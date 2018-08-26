@@ -42,6 +42,16 @@
         <view class="zan-cell__ft">{{textArea}}</view>
       </view>
     </div>
+    <div wx:if="{{mark == '0'}}">
+      <view class="zan-cell">
+        <view class="zan-cell__bd">
+          置为优秀
+        </view>
+        <view class="zan-cell__ft">
+          <syncSwitch :checked.sync="sync_checked" componentId="sync"> </syncSwitch>
+        </view>
+      </view>
+    </div>
 
 
       <div wx:if="{{mark=='0'}}">
@@ -71,16 +81,19 @@
 <script>
   import wepy from 'wepy'
   import zanField from '../components/zan-field'
+  import zanSwitch from '../components/zan-switch'
   import AV from '../libs/av-weapp-min'
   export default class Checkwork extends wepy.page {
     config = {
       navigationBarTitleText: '作业'
     }
     components = {
+      syncSwitch: zanSwitch,
       zanField1: zanField
     };
 
     data = {
+      sync_checked: false,
       areaIndex: 0,
       teacherList: [],
       score: '',
@@ -101,6 +114,7 @@
       },
       bindFormSubmit: function(e) {
         var self = this;
+        console.log('sync_checked' + self.sync_checked);
         // 提交数据到后台;
         var id = self.work.id;
         console.log(self.work);
@@ -110,6 +124,7 @@
         work.set('description', self.textArea);
         work.set('score',self.score);
         work.set('mark','1');
+        work.set("excellent", self.sync_checked);
         // 保存到云端
         work.save().then(res => {
           // 表示成功
@@ -123,6 +138,16 @@
     }
 
     events = {
+
+      zanSwitchChange(event) {
+        console.log(event);
+
+        let { componentId, checked} = event.source;
+        if(componentId === 'sync') {
+          this.sync_checked = !checked;
+          this.$apply();
+        }
+      },
       zanFieldChange(e) {
         var self = this;
         const {componentId, detail} = e

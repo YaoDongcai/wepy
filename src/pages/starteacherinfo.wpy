@@ -30,8 +30,8 @@
   <view style="margin:20px 0" wx:if="{{type=='student'}}">
     <!-- 如果是当前进入的数据 表示为icon-->
     <view class="zan-panel">
-      <view class="zan-cell" wx:for="{{teacher.studentVideo}}" wx:key="key">
-        <video src="{{item}}" controls></video>
+      <view class="zan-cell" wx:for="{{studentVideo}}" wx:key="key">
+        <video src="{{item.fileUrl}}" controls></video>
       </view>
 
     </view>
@@ -58,6 +58,7 @@
       zanLoadmore
     }
     data = {
+      studentVideo:[],
       teacher:null,
       _true:true,
       location:'定位失败',
@@ -129,9 +130,23 @@
       // 当前这位教师的id
       //需要展示当前这位老师的一些个人风采消息;
       self.objectId = id;
+      // 获取当前的老师的学生视频：
+      console.log('id' + id);
 
+      var queryTeacherForStudentExcellent = new AV.Query('Work');
+      var todoTeacherItem = AV.Object.createWithoutData('Teachers',id);
+
+      queryTeacherForStudentExcellent.equalTo('teacher', todoTeacherItem);
+      queryTeacherForStudentExcellent.equalTo('excellent', true);
+      queryTeacherForStudentExcellent.find().then(function (res) {
+        console.log(res)
+        self.studentVideo = res;
+      }, function(error) {
+        console.log(error)
+      });
       // 获取当前的老师的详细信息;
       var queryTeachers = new AV.Query('Teachers');
+
       queryTeachers.get(id).then(function (res) {
         // 成功获得实例
         self.teacher = res;
