@@ -334,7 +334,9 @@ image {
       // 获得当前登录用户
     }
     onUnload()  {
+      const user = AV.User.current();
 
+      console.log(user.get('authData')['lc_weapp']['openid']);
 
     }
 

@@ -1,0 +1,81 @@
+<style >
+  @import '/zanui/panel.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/icon.wxss';
+  .zan-islike {
+    color: #999999;
+  }
+  .zan-notlike {
+    color: red;
+  }
+  video {
+    width:100%;
+  }
+</style>
+
+<template>
+  <!-- 视频展示 含有点赞 -->
+  <view class="zan-panel" wx:for="{{works}}">
+    <view class="zan-panel-title">
+      {{item.title ||'暂无'}}
+    </view>
+    <view class="zan-card">
+
+      <video class="video" src="{{item.fileUrl}}">
+
+      </video>
+      <view class="zan-card-icon">
+        <view class="zan-icon zan-icon-like {{person.style}}" @tap="setLike">
+          {{person.isLike}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class ShowStyle  extends wepy.page {
+    config = {
+      navigationBarTitleText: '风采'
+    }
+
+    data = {
+      works:[],
+      person: {
+        isLike:'点赞',
+        style: 'zan-islike'
+      }
+    }
+    methods = {
+      setLike() {
+        const self = this;
+        // 开始点赞的行为;
+       if(self.person.isLike == '点赞') {
+         self.person.style = 'zan-notlike';
+         self.person.isLike = '取消'
+       }else {
+         self.person.style = 'zan-islike';
+         self.person.isLike = '点赞'
+       }
+       self.$apply()
+      }
+    }
+    onLoad() {
+      const self = this;
+      let work = new AV.Query('Work');
+      work.descending('createdAt');
+      work.equalTo("excellent", true);
+
+      work.find().then(res=> {
+        console.log(res);
+        self.works = res;
+        self.$apply();
+      }, error=> {
+
+      });
+    }
+  }
+</script>

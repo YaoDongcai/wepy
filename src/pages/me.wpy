@@ -43,6 +43,14 @@
     </view>
   </view>
   <view class="zan-panel">
+    <view class="zan-cell" @tap="setPersonVideo()">
+      <view class="zan-cell__bd">个人秀</view>
+      <view class="zan-cell__ft">
+        <view class="zan-icon zan-icon-arrow"></view>
+      </view>
+    </view>
+  </view>
+  <view class="zan-panel">
     <view class="zan-cell" @tap="feedback()">
       <view class="zan-cell__bd">意见反馈</view>
       <view class="zan-cell__ft">
@@ -83,6 +91,12 @@
 
     }
     methods = {
+      // 设置个人视频;
+      setPersonVideo() {
+        wx.navigateTo({
+          url: "/pages/personalVideo"
+        })
+      },
       personalPlan() {
         // 我的老师部分;
         wx.navigateTo({

@@ -14,33 +14,35 @@
 <template>
   <!--<div class="zan-panel-title">提交作业</div>-->
   <div class="zan-panel">
-    <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1>
+    <form bind:submit="noticeSubmit" report-submit="true">
+      <zanField1 :options="base_name" :value="{{title}}" componentId="zanField1"></zanField1>
 
-    <view class="zan-cell zan-field">
-      <view class="zan-cell__hd zan-field__title">选择教师</view>
-      <picker
-        mode="selector"
-        class="zan-field__input zan-cell__bd"
-        range="{{ teacherList }}"
-        range-key="name"
-        value="{{ areaIndex }}"
-        bindchange="onAreaChange"
-      >
-        {{ teacherList[areaIndex].name }}
-      </picker>
+      <view class="zan-cell zan-field">
+        <view class="zan-cell__hd zan-field__title">选择教师</view>
+        <picker
+          mode="selector"
+          class="zan-field__input zan-cell__bd"
+          range="{{ teacherList }}"
+          range-key="name"
+          value="{{ areaIndex }}"
+          bindchange="onAreaChange"
+        >
+          {{ teacherList[areaIndex].name }}
+        </picker>
 
-     </view>
-    <div class="zan-cell "  @tap = "chooseVideo">
-      <view class="zan-cell__hd">
-      选择视频</view>
+       </view>
+      <div class="zan-cell "  @tap = "chooseVideo">
+        <view class="zan-cell__hd">
+        选择视频</view>
 
-    </div>
-    <video class="video" src="{{video}}" wx:if="{{video}}"></video>
-    <view class="zan-cell" style="justify-content:center">
-      <view class="zan-btn zan-btn--primary" @tap = "uploadFile" wx:if="{{video}}">
-       提交作业
+      </div>
+      <video class="video" src="{{video}}" wx:if="{{video}}"></video>
+      <view class="zan-cell" style="justify-content:center">
+        <button formType="submit" class="zan-btn zan-btn--primary" wx:if="{{video}}">
+         提交作业
+        </button>
       </view>
-    </view>
+    </form>
   </div>
 </template>
 
@@ -63,7 +65,7 @@
         title: '作业名称',
         placeholder: '作业名称'
       },
-
+      openid: null,
       title:'',// 填写标题
       video:null, // 本地视频地址
       fileUrl:'',// 上传的视频地址
@@ -74,8 +76,10 @@
         this.areaIndex = e.detail.value;
         this.$apply()
       },
-      uploadFile() {
+      noticeSubmit(e) {
         var self = this;
+        // 获取这个老师的openid;
+
         // 开始上传;
        wx.showLoading({
         title: '提交中',
@@ -91,44 +95,122 @@
         const username = this.$parent.globalData.username;
         const WorkClass = AV.Object.extend('Work');
         const Work = new WorkClass();
-
+        Work.set('openid', self.openid);
         Work.set('title',self.title);// 设置标题
         Work.set('fileUrl',fileUrl)// 设置视频路径
         Work.set('username', username.username)// 设置用户的ID
         // 当前的teacher 信息;
         var teacherId = self.teacherList[self.areaIndex].id;
+
         console.log(self.teacherList[self.areaIndex].id);
         var teacher = AV.Object.createWithoutData('Teachers',teacherId);
+        // 获取这个老师的openid;
+        console.log(teacher);
+
+        // 短信的模板
+        // 表示跳转成功;
         Work.set('teacher', teacher);
         const user = AV.User.current();
         Work.set('user',user);
-        Work.save().then(success=> {
-          console.log(success.id);
-          console.log('作业提交成功');
+        Work.save().then(success=> {;
           // 作业提交成功 // 回到我的提交作业页面;
           wx.hideLoading() ;
+          // 向这个老师提交一个数据appid
+          // 通知即可;
+
           wx.showToast({
-              title: '提交成功',
-              icon: 'success',
-              duration: 2000
-            });
-          wx.navigateBack({
-            delta: 1
-          })
-          // wx.navigateTo({
-          //   url: "/pages/personalPlan"
-          // })
-        //   wx.navigateTo({
-        //   url: "/pages/home"
-        // })
+            title: '提交成功',
+            icon: 'success',
+            duration: 2000
+          });
+          let phoneNumber = self.teacherList[self.areaIndex].get('phone');
+          console.log(phoneNumber)
+
+          let teachername = self.teacherList[self.areaIndex].get('name');
+          AV.Cloud.requestSmsCode({
+            mobilePhoneNumber: phoneNumber ,  // 目标手机号
+            template: '作业批改',       // 控制台预设的模板名称
+            teachername: teachername,
+            sign:'初练音乐' ,                // 控制台预设的短信签名
+            username:user.get('nickname'),// 这个是名称
+            title:self.title// 题目
+          }).then(function(res2){
+            //调用成功
+            wx.navigateBack({
+                   delta: 1
+                 })
+            console.log(res2)
+          }, function(err2){
+            //调用失败
+            console.log(err2)
+          });
+
         }, error => {
           wx.showToast({
-              title: '提交失败',
-              icon: 'success',
-              duration: 2000
-            })
+            title: '提交失败',
+            icon: 'success',
+            duration: 2000
+          })
+
+
           console.log(error.message)
         })
+
+
+
+
+        // let teacherOpenId = self.teacherList[self.areaIndex].get('openid');
+        //
+        // const APPID = 'wxc5ede087b54c2d2b', APPSECRET = '5e0c4d6c57dea46aafd46e375e6b936f';
+        //
+        // let tokenUrl = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + APPID +'&secret=' + APPSECRET;
+        // wx.request({
+        //   url: tokenUrl,
+        //   method: 'GET',
+        //   success: function(res) {
+        //     console.log(res)
+        //     const _access_token = res.data.access_token;
+        //     console.log(e.detail.formId);
+        //     let openid = teacherOpenId;
+        //     let url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' + _access_token
+        //     ;
+        //     let _jsonData = {
+        //       access_token: _access_token,
+        //       touser: openid,
+        //       template_id: 'Th2Q0u4FGX0eSipDhQ9DX0mBsXISeNf4DvI_uHjXjoA', // 申请的模板id
+        //       form_id: e.detail.formId,
+        //       page: "pages/home", // 跳转到的页面;
+        //       data: {
+        //         "keyword1": {"value": self.title, "color": "#173177"},
+        //         "keyword2": {"value": username.nickname, "color": "#173177"},
+        //       }
+        //     }
+        //     wx.request({
+        //       url: url,
+        //       data: _jsonData,
+        //       method: 'POST',
+        //       success: function (res) {
+        //         console.log(res)
+        //
+        //       },
+        //       fail: function (err) {
+        //         console.log('request fail ', err);
+        //       },
+        //       complete: function (res) {
+        //         console.log("request completed!");
+        //       }
+        //
+        //     })
+        //   },
+        //   error: function(error) {
+        //     console.log(error)
+        //   }
+        // });
+
+
+
+
+
       }
 
     ).catch(console.error);
@@ -170,12 +252,13 @@
     onLoad() {
       var self = this;
       const username = this.$parent.globalData.username;
-
+      const user = AV.User.current();
+      this.openid = user.get('authData')['lc_weapp']['openid'];
       // 获取该学生绑定的教师;
 
 var StudentBIndToTeacher = new AV.Query('AppointTeacher');
           StudentBIndToTeacher.include(['teacherId']);
-          StudentBIndToTeacher.equalTo('user',AV.User.current());
+          StudentBIndToTeacher.equalTo('user', user);
           StudentBIndToTeacher.equalTo('status','1'); // 表示绑定
           StudentBIndToTeacher.find().then(res=> {
             console.log(res)
@@ -189,6 +272,7 @@ var StudentBIndToTeacher = new AV.Query('AppointTeacher');
               // 提醒用户 已经建立了当前关系了
               for(var i=0;i< res.length ;i++) {
                 self.teacherList.push(res[i].get('teacherId'));
+
               }
 
               self.$apply();

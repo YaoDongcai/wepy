@@ -93,6 +93,9 @@
     };
 
     data = {
+      title: null,
+      appointUser:null,
+      appointteacher: null,
       sync_checked: false,
       areaIndex: 0,
       teacherList: [],
@@ -120,16 +123,52 @@
         console.log(self.work);
         console.log(self.work.get('mark'));
         var work = AV.Object.createWithoutData('Work', id);
+        console.log(work);
         // 修改属性
         work.set('description', self.textArea);
         work.set('score',self.score);
         work.set('mark','1');
         work.set("excellent", self.sync_checked);
+
         // 保存到云端
         work.save().then(res => {
           // 表示成功
           self.mark = '1';
           self.$apply();
+
+          // 发送一条短信给这个学生;
+          // 先去查询一下这个学生提交作业的信息; 获取他的姓名和号码;
+          // 一个是当前的老师的teacheriD 一个是当前的user 信息;
+          const appointUser = self.appointUser;
+          console.log(appointUser);
+          const appointTeacher = self.appointteacher;
+          console.log(appointTeacher);
+          // 需要去找一下这个学生的信息;
+          let AppointTeacher = new AV.Query('AppointTeacher');
+          AppointTeacher.equalTo("user", appointUser);
+          AppointTeacher.equalTo("teacherId",appointTeacher);
+          AppointTeacher.find().then(res=> {
+            console.log(res);
+            // 找到第一个信息;
+            let currentStudent = res[0];
+            let phone = currentStudent.get('phone');
+            console.log('phone' + phone);
+            let username = currentStudent.get('name');
+            // 发送到这个手机号码;
+            AV.Cloud.requestSmsCode({
+              mobilePhoneNumber: phone ,  // 目标手机号
+              template: '作业回复',       // 控制台预设的模板名称
+              sign:'初练音乐' ,                // 控制台预设的短信签名
+              username:username,// 这个是名称
+              title:self.title// 题目
+            }).then(res2 => {
+              console.log(res2);
+            },error2=> {
+              console.log(error2);
+            });
+          }, error=> {
+
+          });
         },error=> {
           // 表示失败
 
@@ -167,10 +206,12 @@
         // 显示作业;
         console.log(res)
         self.work = res;
-
+        self.title = self.work.get('title')
         self.score = self.work.get('score');
         self.textArea = self.work.get('description');
         self.mark = self.work.get('mark');
+        self.appointteacher = self.work.get('teacher');
+        self.appointUser = self.work.get('user');
         self.$apply();
       }, error => {
 

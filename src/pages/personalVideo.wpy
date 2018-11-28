@@ -1,0 +1,91 @@
+<style>
+  @import '/zanui/btn.wxss';
+  @import '/zanui/panel.wxss';
+  @import '/zanui/cell.wxss';
+  @import '/zanui/icon.wxss';
+  @import '/zanui/card.wxss';
+  @import '/zanui/color.wxss';
+</style>
+
+<template>
+<view class="zan-panel">
+  <view class="zan-cell" @tap="uploadVideo">
+    <view style="width:100%;color:white;height:100px; border-radius:5px;background-color:#999999;display:flex;align-items: center;justify-content: center;">
+      点我选择视频上传
+    </view>
+  </view>
+</view>
+  <view class="zan-cell" wx:for="{{personalVideoList}}" wx:key="index">
+    <video class="video" src="{{item}}"></video>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import AV from '../libs/av-weapp-min'
+  export default class Template  extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人秀'
+    }
+    data = {
+      personalVideoList: [],
+      currentTeachers:null,
+    }
+    methods = {
+        uploadVideo() {
+          console.log('-----chooseVideo')
+          var self = this;
+          wx.chooseVideo({
+            sourceType: ['album', 'camera'],
+            maxDuration:60,
+            camera: 'back',
+            success: function (res) {
+              let tempFilePath = res.tempFilePath;
+              new AV.File('自拍视频', {
+                blob: {
+                  uri: tempFilePath,
+                },
+              }).save().then(file=>{
+                const fileUrl = file.url();
+                self.personalVideoList.push(fileUrl);
+                self.$apply();
+                // 将这个视频开始写入教师的里面去;
+                self.currentTeachers.set('show',self.personalVideoList);
+                self.currentTeachers.save().then(res=> {
+                  console.log(res)
+                },error=> {
+                  console.log(error)
+                });
+              });
+            },
+            fail: function (e) {
+              wx.showToast({
+                title: '视频大于60秒，请重新选择',
+                duration: 2000
+              })
+            }
+          })
+        }
+    }
+    onShow() {
+      // 先要获取当前已经上传过得视频;
+      const self = this;
+      const username = this.$parent.globalData.username;
+      console.log(username);
+      const query = new AV.Query('Teachers');
+      query.equalTo('username', username.username);
+      query.find().then(res=>{
+          console.log(res);
+          self.currentTeachers = res[0];
+          self.personalVideoList = res[0].get('show');
+          self.$apply();
+      }, error=> {
+
+      });
+    }
+    onLoad() {
+
+    }
+  }
+</script>

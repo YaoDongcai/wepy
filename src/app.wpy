@@ -17,7 +17,10 @@ AV.init({
 export default class extends wepy.app {
   config = {
     pages: [
+
       'pages/home',
+      'pages/showstyle',
+      'pages/testnotice',
       "pages/history",
       "pages/recommend",
       "pages/current",
@@ -38,7 +41,8 @@ export default class extends wepy.app {
       "pages/campuscattle",
       "pages/mastercattle",
       "pages/order",
-      "pages/feedback"
+      "pages/feedback",
+      "pages/personalVideo"
     ],
 
     window: {
@@ -58,12 +62,18 @@ export default class extends wepy.app {
         "text":"初练",
         "iconPath":"images/icon_home.png",
         "selectedIconPath":"images/icon_home_active.png"
+      }, {
+        "pagePath":"pages/showstyle",
+        "text":"同学",
+        "iconPath":"images/icon_classify.png",
+        "selectedIconPath":"images/icon_classify_active.png"
+
       },{
-        "pagePath":"pages/me",
-        "text":"我的",
-        "iconPath":"images/icon_info.png",
-        "selectedIconPath":"images/icon_info_active.png"
-      }]
+          "pagePath":"pages/me",
+          "text":"我的",
+          "iconPath":"images/icon_info.png",
+          "selectedIconPath":"images/icon_info_active.png"
+    }]
     }
   }
   constructor() {
@@ -82,7 +92,7 @@ export default class extends wepy.app {
     console.log('app.wpy onLaunch')
     var self = this;
 
-    await wepy.login();
+    const result = await wepy.login();
 
     self.globalData.userInfo = await wepy.getUserInfo();
 //    console.log(self.globalData.userInfo)
