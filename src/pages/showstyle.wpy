@@ -15,18 +15,18 @@
 
 <template>
   <!-- 视频展示 含有点赞 -->
-  <view class="zan-panel" wx:for="{{works}}">
+  <view class="zan-panel" wx:for="{{works}}" wx:for-index="workIndex">
     <view class="zan-panel-title">
-      {{item.title ||'暂无'}}
+      {{item.item.title ||'暂无'}}
     </view>
     <view class="zan-card">
 
-      <video class="video" src="{{item.fileUrl}}">
+      <video class="video" src="{{item.item.fileUrl}}">
 
       </video>
       <view class="zan-card-icon">
-        <view class="zan-icon zan-icon-like {{person.style}}" @tap="setLike">
-          {{person.isLike}}
+        <view class="zan-icon zan-icon-like {{item.style}}" @tap="setLike({{workIndex}})">
+          {{item.isLike}}
         </view>
       </view>
     </view>
@@ -50,32 +50,130 @@
       }
     }
     methods = {
-      setLike() {
+      setLike(index) {
+        console.log('index' + index);
         const self = this;
+
+        let item = self.works[index];
+
         // 开始点赞的行为;
-       if(self.person.isLike == '点赞') {
-         self.person.style = 'zan-notlike';
-         self.person.isLike = '取消'
-       }else {
-         self.person.style = 'zan-islike';
-         self.person.isLike = '点赞'
-       }
+        if(item.itemIsNewOrOld) {
+          console.log("created");
+          // 表示为第一次点赞行为; create操作：
+          // UserLiked; -- likeStatus UserId likeType likedVideo
+          var UserLiked = AV.Object.extend("UserLiked");
+          var userLiked = new UserLiked();
+          let currentUser = AV.User.current();
+          userLiked.set("UserId", currentUser);
+          userLiked.set("likeStatus", true);
+          userLiked.set("likeType","video");
+          userLiked.set("likedVideo", item.item);
+
+          userLiked.save().then(res=> {
+            // 需要将这个数据回传到这个item里面
+            item.likedStatus = res.get('likeStatus');
+            item.objectId = res.getObjectId() ;
+            item.isLike =  res.get('likeStatus')? '取消': '点赞';
+            item.style = res.get('likeStatus')? 'zan-notlike' : "zan-islike";
+
+            item.itemIsNewOrOld = false; // 一旦找到了这条数据 我们就认为是已经创建过的数据了;
+            self.$apply();
+          }, error => {
+            console.log(error);
+          });
+        }else {
+          // 表示为第二次行为; 开始为post save操作;
+          // 获取当前的likeStatus 状态
+          // 获取这个objectId 设置里面的数据 然后重新提交;
+          var userLiked = AV.Object.createWithoutData('UserLiked', item.objectId);
+
+          if(item.likedStatus) {
+            console.log('取消');
+            // 表面为取消动作
+            userLiked.set('likeStatus', false);
+            item.style = 'zan-islike';
+            item.likedStatus = false ;
+            item.isLike = '点赞'
+          }else {
+            // 表面为点赞动作：
+            console.log('点赞');
+
+            item.style = 'zan-notlike';
+            item.likedStatus = true;
+            item.isLike = '取消'
+            userLiked.set('likeStatus', true);
+
+          }
+          userLiked.save();
+        }
+       // self.works[index] = item;
+        console.log(self.works[index]);
        self.$apply()
       }
     }
     onLoad() {
       const self = this;
+      // 开始登陆;
+      // 开始加载UserLike数据;
+      // 获取当前的User;查询当前的user 点赞了视频条目;
+
+      // 需要组装数据 将当前的用户点赞的数据和当前的视频list 来标记：
+      // 如果当前没有那么就记住为 第一次点赞 ---create
+      // 如果当前有了 那么就要记住为当前的数据为第二次点赞为----save 更改数据：
+
+      wx.showLoading({
+        title: '加载中',
+      });
+
       let work = new AV.Query('Work');
+      let worksList = [];
       work.descending('createdAt');
+      work.limit(5); // limit five;
       work.equalTo("excellent", true);
 
       work.find().then(res=> {
-        console.log(res);
-        self.works = res;
-        self.$apply();
-      }, error=> {
+        wx.hideLoading() ;
 
+        let UserLiked = new AV.Query('UserLiked');
+        let currentUser = AV.User.current();
+        UserLiked.equalTo("UserId", currentUser);
+
+        UserLiked.find().then(res2=> {
+          res.map(item => {
+            var tempItem = {
+              item: item,
+              objectId:"",
+              style:'zan-islike',
+              isLike: '点赞',
+              likedStatus: false,  // 是否点赞 认为是没有点赞
+              itemIsNewOrOld: true // 第一次进来的数据 都认为是新的
+            };
+            worksList.push(tempItem);
+
+            res2.map(item2 => {
+
+              if (item.getObjectId() == item2.get('likedVideo').getObjectId()) {
+                tempItem.likedStatus = item2.get('likeStatus');
+                tempItem.objectId = item2.getObjectId() ;
+                tempItem.isLike =  item2.get('likeStatus')? '取消': '点赞';
+                tempItem.style = item2.get('likeStatus')? 'zan-notlike' : "zan-islike";
+
+                tempItem.itemIsNewOrOld = false; // 一旦找到了这条数据 我们就认为是已经创建过的数据了;
+              }
+            });
+          });
+          console.log(worksList);
+          self.works = worksList;
+
+          self.$apply();
+        },error2 => {
+
+        });
+      }, error=> {
+        wx.hideLoading() ;
       });
+
+
     }
   }
 </script>
