@@ -89,13 +89,35 @@ export default class extends wepy.app {
 
   async onLaunch() {
     // 开始初始化这个组件
-    console.log('app.wpy onLaunch')
-    var self = this;
-
-    const result = await wepy.login();
-
-    self.globalData.userInfo = await wepy.getUserInfo();
+    // console.log('app.wpy onLaunch')
+    // var self = this;
+    //
+    // const result = await wepy.login();
+    //
+    // self.globalData.userInfo = await wepy.getUserInfo();
 //    console.log(self.globalData.userInfo)
+
+    // 先看当前的有没有绑定信息;
+    wx.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          console.log('已经授权');
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
+            success: res => {
+              this.setData({
+                ismask: 'none'
+              });
+            }
+          })
+        }else{
+          console.log('没有授权');
+          this.setData({
+            ismask: 'block'
+          });
+        }
+      }
+    });
   }
 
   getUserInfo(cb) {
